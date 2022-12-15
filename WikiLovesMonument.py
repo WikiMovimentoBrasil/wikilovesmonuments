@@ -2,9 +2,9 @@ import requests
 import json
 import re #importing regular expression
 
-def get_all_files_subcat(cat_title, lang='commons') -> list:
+def get_all_files_subcat(cat_title) -> list:
     
-    url="https://{0}.wikimedia.org/w/api.php".format(lang)
+    url="https://commons.wikimedia.org/w/api.php"
     params = {
                 "action": "query",
                 "generator":"categorymembers", #Get information about all categories used in the page
@@ -27,9 +27,12 @@ def get_all_files_subcat(cat_title, lang='commons') -> list:
 
     return files_list
 
-def get_all_multiple_cat(name, lang) -> list:
+#get_all_files_subcat('Category:Images_by_Donatas_Dabravolskas_in_Wiki_Loves_Monuments_2022_in_Brazil')
+
+
+def get_all_multiple_cat(name) -> list:
     
-    url="https://{0}.wikimedia.org/w/api.php".format(lang)
+    url="https://commons.wikimedia.org/w/api.php"
     
     params = {
             "action": "query",
@@ -45,7 +48,11 @@ def get_all_multiple_cat(name, lang) -> list:
         response = resp.json()
         for category_item in response['query']['categorymembers']:
             name1 = name.capitalize() 
-            if name1 in category_item['title']:
-                print(cat, ' -> ', len(get_all_files_subcat(category_item['title'])))
-            
-get_all_multiple_cat("Jereissati", lang='commons')
+            try:
+                if category_item['title'][19:19+len(name1)] == name1:
+                    print(cat, ' -> ', category_item['title'][19:-39], ' -> ', len(get_all_files_subcat(category_item['title'])))
+                
+            except:
+                print(cat, ' -> ', 'Not available')
+
+get_all_multiple_cat("ana")
