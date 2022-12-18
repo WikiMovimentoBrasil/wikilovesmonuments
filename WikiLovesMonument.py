@@ -30,7 +30,7 @@ def get_all_files_subcat(cat_title) -> list:
 #get_all_files_subcat('Category:Images_by_Donatas_Dabravolskas_in_Wiki_Loves_Monuments_2022_in_Brazil')
 
 
-def get_all_multiple_cat(name) -> list:
+def get_all_multiple_cat(name, country) -> str:
     
     url="https://commons.wikimedia.org/w/api.php"
     
@@ -46,13 +46,19 @@ def get_all_multiple_cat(name) -> list:
         params.update({"cmtitle": cat})
         resp = requests.get(url, params)
         response = resp.json()
-        for category_item in response['query']['categorymembers']:
+        country_args = country.capitalize() 
+           
+        if cat[-len(country_args):] == country_args:
             name1 = name.capitalize() 
-            try:
-                if category_item['title'][19:19+len(name1)] == name1:
-                    print(cat, ' -> ', category_item['title'][19:-39], ' -> ', len(get_all_files_subcat(category_item['title'])))
-                
-            except:
-                print(cat, ' -> ', 'Not available')
+            for category_item in response['query']['categorymembers']:
+                try:
+                    if category_item['title'][19:19+len(name1)] == name1:
+                        print(cat, ' -> ', category_item['title'][19:-39], ' -> ', len(get_all_files_subcat(category_item['title'])))
 
-get_all_multiple_cat("ana")
+                except:
+                    print(cat, ' -> ', 'No contributions recorded')
+        else:
+            print('No monument contributions recorded for the country {0} available'.format(country))
+                
+            
+get_all_multiple_cat("wa", 'braz')
