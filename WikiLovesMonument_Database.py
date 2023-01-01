@@ -3,28 +3,19 @@ import requests
 import asyncio
 from requests import Session
 from collections import Counter
+import json
 
 
-def get_all_files_cat(cat_title) -> list:
-    
-    """
-    all the files in a specific category of wiki loves monument competition using api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        cat_title (string): the title of the category of wiki loves monument
-    
-    Returns:
-        a list of files in a specific category
-    """
+def files_cat(cat_title) -> list:
     
     url="https://commons.wikimedia.org/w/api.php"
     params = {
-                "action": "query",
-                "generator":"categorymembers", #Get information about all categories used in the page
-                "gcmlimit": 500,
-                "gcmtitle": cat_title,
-                "gcmnamespace": 6, #the namespace here means it gets just files, but a 14 gets a subcategory
-                "format": "json",
+            "action": "query",
+            "generator":"categorymembers", #Get information about all categories used in the page
+            "gcmlimit": 500,
+            "gcmtitle": cat_title,
+            "gcmnamespace": 6, #the namespace here means it gets just files, but a 14 gets a subcategory
+            "format": "json",
         }
     s = requests.Session()
     resp = s.get(url, params=params)
@@ -42,12 +33,10 @@ def get_all_files_cat(cat_title) -> list:
     return files_list
 
 
-#get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
+#files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
 
 
-
-
-def get_username(title) -> str:
+def username(title) -> str:
     
     """
     username of a specific file on the homepage using api: https://commons.wikimedia.org/w/api.php
@@ -78,10 +67,10 @@ def get_username(title) -> str:
     userinfo = response_pages[page_id]['imageinfo'][0]['user'] # retrieves the value of item imageinfo
     return userinfo
     
-#get_username("File:2015-07-22-Estacao da Luz-01.jpg")
+#username("File:2015-07-22-Estacao da Luz-01.jpg")
 
 
-def get_monumentid(title) -> str:
+def monumentid(title) -> str:
     
     """
     the monument id of a specific file using the wikitext of the content from api: https://commons.wikimedia.org/w/api.php
@@ -112,7 +101,7 @@ def get_monumentid(title) -> str:
     else:
         return
     
-#get_monumentid('File:2-Capela_do_verzeri-foto_Fernando_Gomes.jpg')
+#monumentid('File:2-Capela_do_verzeri-foto_Fernando_Gomes.jpg')
 
 
 
@@ -242,7 +231,7 @@ def get_user_contribution(user, country):
     for competition in competition_list:
         if country in competition [-6:]:
             name = user.capitalize()
-            users = [get_username(file_name) for file_name in get_all_files_cat(competition) if name in get_username(file_name)]
+            users = [username(file_name) for file_name in files_cat(competition) if name in username(file_name)]
                 
             if len(users) >= 1:
                 print(competition [42: 46], ' -> ', len(users))
@@ -269,8 +258,8 @@ def get_file_details(user, country):
             name = user.capitalize()
             print(competition [42: 46])
             
-            for file_name in get_all_files_cat(competition):
-                if name in get_username(file_name):
+            for file_name in files_cat(competition):
+                if name in username(file_name):
                     
                     print(file_name)
                     get_metadata_item(file_name)
@@ -298,11 +287,11 @@ def get_file_monumentid(user, country):
             name = user.capitalize()
             print(competition [42: 46])
             
-            for file_name in get_all_files_cat(competition):
-                if name in get_username(file_name):
+            for file_name in files_cat(competition):
+                if name in username(file_name):
                     
                     print(file_name)
-                    get_monumentid(file_name)
+                    monumentid(file_name)
                     
                 else:
                     print('This user does not exist')
@@ -312,12 +301,11 @@ def get_file_monumentid(user, country):
 #get_file_monumentid('fili', 'Brazil')
 
 def user_contribution_count(competition):
-           
     
-    users_dict = Counter([get_username(file_name) for file_name in get_all_files_cat(competition)])
+    users_dict = Counter([username(file_name) for file_name in files_cat(competition)])
    
-    for user, num_contribution in users_dict.items():
-        return user, num_contribution
+    user_contribution = json.dumps(users_dict)
+    return user_contribution
                 
 
-print(user_contribution_count('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'))
+#user_contribution_count('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
