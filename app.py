@@ -21,19 +21,19 @@ class Contribution(db.Model):
 
         id = db.Column(db.Integer, primary_key=True)
         name = db.Column(db.String, unique=True)
-        year2015 = db.Column(db.Text, unique=True)
+        dataresponse = db.Column(db.Text, unique=True)
         
 
-        def __init__(self, name, year2015):
+        def __init__(self, name, dataresponse):
                 self.name = name
-                self.year2015 = year2015
+                self.dataresponse = dataresponse
                                                                                  
 
 if __name__ == '__main__':
-        db.create_all()
-        freq_count = user_contribution_count('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
-        year2015contribution = Contribution("Year2015", freq_count)
-        db.session.add(year2015contribution)
+        #db.create_all()
+        freq_count = user_contribution_count('Category:Images_from_Wiki_Loves_Monuments_2017_in_Brazil')
+        year2017contribution = Contribution("Year2017", freq_count)
+        db.session.add(year2017contribution)
         db.session.commit() 
         print('done')    
 
