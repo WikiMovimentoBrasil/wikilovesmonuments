@@ -11,24 +11,66 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Project.db' 
+app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\WLM.db' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 
-class person(db.Model):
+class Person(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         username = db.Column(db.String)
         data_created = db.Column(db.Text)
+        photograph = db.relationship("Photograph", backref="person")
         
 
         def __init__(self, username, data_created):
                 self.username = username
                 self.data_created = data_created
-                                                                                 
 
-class photograph(db.Model):
+
+
+class Edition(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        year = db.Column(db.Integer)
+        country = db.Column(db.String)
+        place_1 = db.Column(db.String)
+        place_2 = db.Column(db.String)
+        place_3 = db.Column(db.String)
+        place_4 = db.Column(db.String)
+        place_5 = db.Column(db.String)
+        place_6 = db.Column(db.String)
+        place_7 = db.Column(db.String)
+        place_8 = db.Column(db.String)
+        place_9 = db.Column(db.String)
+        place_10 = db.Column(db.String)
+        photograph = db.relationship("Photograph", backref="person")
+        
+        
+
+        def __init__(self, year, country, place_1, place_2, place_3, place_4, place_5, place_6, place_7, place_8, place_9, place_10):
+                self.year = year
+                self.country = country
+                self.place_1 = place_1
+                self.place_2 = place_2
+                self.place_3 = place_3
+                self.place_4 = place_4
+                self.place_5 = place_5
+                self.place_6 = place_6
+                self.place_7 = place_7
+                self.place_8 = place_8
+                self.place_9 = place_9
+                self.place_10 = place_10
+
+
+
+monument_photograph = db.Table("monument_photograph",
+        db.Column("monument id", db.Integer, db.ForeignKey("monument.id")),
+        db.Column("photograph id", db.Integer, db.ForeignKey("photograph.monument_id"))
+)
+
+
+class Photograph(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         filename = db.Column(db.String)
         photograph = db.Column(db.String)
@@ -39,6 +81,9 @@ class photograph(db.Model):
         camera_model = db.Column(db.String)
         geographic_coordinates = db.Column(db.String)
         edition = db.Column(db.String)
+        person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
+        edition_id = db.Column(db.Integer, db.ForeignKey("edition.id"))
+        detail = db.relationship("Monument", secondary=monument_photograph, backref="photo_details")
         
 
         def __init__(self, filename, photograph, monument_id, license, timestamp_uploaded, timestamp_created, camera_model, geographic_coordinates, edition):
@@ -53,7 +98,7 @@ class photograph(db.Model):
                 self.edition =  edition
                                                                                  
 
-class monument(db.Model):
+class Monument(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         wikidata_qid = db.Column(db.String)
         country = db.Column(db.String)
@@ -75,36 +120,6 @@ class monument(db.Model):
                 self.image_filename = image_filename
                 self.last_modified = last_modified
                                                                                    
-
-class edition(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        year = db.Column(db.Integer)
-        country = db.Column(db.String)
-        place_1 = db.Column(db.String)
-        place_2 = db.Column(db.String)
-        place_3 = db.Column(db.String)
-        place_4 = db.Column(db.String)
-        place_5 = db.Column(db.String)
-        place_6 = db.Column(db.String)
-        place_7 = db.Column(db.String)
-        place_8 = db.Column(db.String)
-        place_9 = db.Column(db.String)
-        place_10 = db.Column(db.String)
-        
-
-        def __init__(self, year, country, place_1, place_2, place_3, place_4, place_5, place_6, place_7, place_8, place_9, place_10):
-                self.year = year
-                self.country = country
-                self.place_1 = place_1
-                self.place_2 = place_2
-                self.place_3 = place_3
-                self.place_4 = place_4
-                self.place_5 = place_5
-                self.place_6 = place_6
-                self.place_7 = place_7
-                self.place_8 = place_8
-                self.place_9 = place_9
-                self.place_10 = place_10
 
 
 
