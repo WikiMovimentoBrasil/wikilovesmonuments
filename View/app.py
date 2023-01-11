@@ -20,13 +20,13 @@ db = SQLAlchemy(app)
 class Person(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         username = db.Column(db.String)
-        data_created = db.Column(db.Text)
-        photograph = db.relationship("Photograph", backref="person")
+        date_created = db.Column(db.Text)
+        photographs = db.relationship("Photograph", backref="person")
         
 
-        def __init__(self, username, data_created):
+        def __init__(self, username, date_created):
                 self.username = username
-                self.data_created = data_created
+                self.date_created = date_created
 
 
 
@@ -44,7 +44,7 @@ class Edition(db.Model):
         place_8 = db.Column(db.String)
         place_9 = db.Column(db.String)
         place_10 = db.Column(db.String)
-        photograph = db.relationship("Photograph", backref="person")
+        photograph1 = db.relationship("Photograph", backref="edition")
         
         
 
@@ -80,13 +80,13 @@ class Photograph(db.Model):
         timestamp_created = db.Column(db.Text)
         camera_model = db.Column(db.String)
         geographic_coordinates = db.Column(db.String)
-        edition = db.Column(db.String)
+        edition_year = db.Column(db.String)
         person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
         edition_id = db.Column(db.Integer, db.ForeignKey("edition.id"))
         detail = db.relationship("Monument", secondary=monument_photograph, backref="photo_details")
         
 
-        def __init__(self, filename, photograph, monument_id, license, timestamp_uploaded, timestamp_created, camera_model, geographic_coordinates, edition):
+        def __init__(self, filename, photograph, monument_id, license, timestamp_uploaded, timestamp_created, camera_model, geographic_coordinates, edition_year, person_id, edition_id):
                 self.filename = filename
                 self.photograph = photograph
                 self.monument_id = monument_id
@@ -95,7 +95,9 @@ class Photograph(db.Model):
                 self.timestamp_created =  timestamp_created
                 self.camera_model =  camera_model
                 self.geographic_coordinates = geographic_coordinates
-                self.edition =  edition
+                self.edition_year =  edition_year
+                self.person_id = person_id
+                self.edition_id =  edition_id
                                                                                  
 
 class Monument(db.Model):
@@ -124,10 +126,18 @@ class Monument(db.Model):
 
 
 if __name__ == '__main__':
-        db.create_all()
+
+        antique = Monument(wikidata_qid="Q123", country="Brazil", located_at="Peru Brazil", geographic_coordinates="1.0W 3.4S", address="22 4th st. Brazil", common_category="team|dry|test", image_filename="File: Antique.jpg", last_modified="2009-4-5 3:15:01")
+        lois = Person(username="Louis", date_created="2022-10-06 10:22:45")
+        antique_edition = Edition(year="2015", country="Brazil", place_1="File: Antique.jpg", place_2="File: Antique.jpg", place_3="File: Antique.jpg", place_4="File: Antique.jpg", place_5="File: Antique.jpg", place_6="File: Antique.jpg", place_7="File: Antique.jpg", place_8="File: Antique.jpg", place_9="File: Antique.jpg", place_10="File: Antique.jpg")
+        antique_photo = Photograph(filename="File: Antique.jpg", photograph="Louis", monument_id="Q123", license="CC by SA", timestamp_uploaded="2022-2-9 10:30:11", timestamp_created="2022-2-9 10:30:11", camera_model="Camon", geographic_coordinates="11W 23S", edition_year="WLM 2016", edition_id=1, person_id=1)
+        
+        #db.create_all()
         #freq_count = user_contribution_count('Category:Images_from_Wiki_Loves_Monuments_2018_in_Brazil')
         #year2018contribution = Contribution("Year2018", freq_count)
         #db.session.add(year2018contribution)
+        
+        db.session.add_all([antique, lois, antique_edition, antique_photo])
         db.session.commit() 
         print('done')    
 
