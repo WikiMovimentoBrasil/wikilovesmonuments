@@ -132,6 +132,10 @@ if __name__ == '__main__':
         antique_edition = Edition(year="2015", country="Brazil", place_1="File: Antique.jpg", place_2="File: Antique.jpg", place_3="File: Antique.jpg", place_4="File: Antique.jpg", place_5="File: Antique.jpg", place_6="File: Antique.jpg", place_7="File: Antique.jpg", place_8="File: Antique.jpg", place_9="File: Antique.jpg", place_10="File: Antique.jpg")
         antique_photo = Photograph(filename="File: Antique.jpg", photograph="Louis", monument_id="Q123", license="CC by SA", timestamp_uploaded="2022-2-9 10:30:11", timestamp_created="2022-2-9 10:30:11", camera_model="Camon", geographic_coordinates="11W 23S", edition_year="WLM 2016", edition_id=1, person_id=1)
         
+        
+        antique_photo.detail.append(antique)
+        db.session.add(antique_photo)
+
         #db.create_all()
         #freq_count = user_contribution_count('Category:Images_from_Wiki_Loves_Monuments_2018_in_Brazil')
         #year2018contribution = Contribution("Year2018", freq_count)
