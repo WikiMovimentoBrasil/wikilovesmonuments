@@ -7,7 +7,7 @@ Created on Wed Dec 28 10:21:37 2022
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+from WikiLovesMonument_Database import get_all_files_cat, get_username, get_location, get_coordinate, get_address, get_monumentid
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\WLM.db' 
