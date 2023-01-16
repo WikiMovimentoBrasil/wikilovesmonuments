@@ -41,7 +41,7 @@ def get_all_files_cat(cat_title) -> list:
 
     return files_list
 
-get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
+#get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
 
 
 
@@ -123,6 +123,115 @@ def get_culturalheritage(title) -> str:
 #get_culturalheritage("File:A fauna e flora local em metal.JPG")
 
 
+def get_categories(title) -> str:
+    
+    """
+    the category of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+        lang(string): the particular wikipedia api needed eg en, fr, commons
+
+    Returns:
+        Categories
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+
+    params = {
+            "action": "query",
+            "prop":"imageinfo",
+            "titles": title,
+            "iiprop":"extmetadata", #the type of file information to get
+            "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    response_pages = response['query']['pages'] 
+    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+    
+    try:
+        for response_item in imageinfo: #loops through the imageinfo list
+            return response_item['extmetadata']['Categories']['value']       
+
+    except:
+        return None   
+#print(get_categories("File:Supreme_Federal_Court_-_Statue.jpg"))
+
+
+def get_winners(cat_title) -> str:
+    
+    """
+    the filename of winners of WLM of particular years using the wikitext of the content from api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+
+    Returns:
+        the filename
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+    params = {
+                "action": "query",
+                "generator":"categorymembers", #Get information about all categories used in the page
+                "gcmlimit": 500,
+                "gcmtitle": cat_title,
+                "gcmnamespace": 6, #the namespace here means it gets just files, but a 14 gets a subcategory
+                "format": "json",
+        }
+    
+    
+    s = requests.Session()
+    resp = s.get(url, params=params)
+    response = resp.json()
+    response_pages = response['query']['pages'] 
+    winners_list = [response_pages[x]['title'] for x in response_pages]
+    
+    return winners_list
+    
+#get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')
+
+
+def get_last_modified(title) -> str:
+    
+    """
+    the last date of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+        lang(string): the particular wikipedia api needed eg en, fr, commons
+
+    Returns:
+        DateTimeOriginal|Categories|License|LicenseUrl|ImageDescription|Credit|GPSLatitude|GPSLongitude
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+
+    params = {
+            "action": "query",
+            "prop":"imageinfo",
+            "titles": title,
+            "iiprop":"extmetadata", #the type of file information to get
+            "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    response_pages = response['query']['pages'] 
+    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+    
+    try:
+        for response_item in imageinfo: #loops through the imageinfo list
+            return response_item['extmetadata']['DateTime']['value']
+    except:
+        return None
+
+#print(get_last_modified("File:Supreme_Federal_Court_-_Statue.jpg"))
+
 
 def get_location(wikidata_id) -> str:
     
@@ -146,15 +255,19 @@ def get_location(wikidata_id) -> str:
 
         wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
         response = wikiquery.query(sparql)
-        results = response['results']['bindings'] #get list of all the response results
-        
-        located_at = results[0]['locationDescription']['value']
-        if located_at:
-            return located_at
-        
-        else:
+
+        try:
+            results = response['results']['bindings'] #get list of all the response results
+            
+            located_at = results[0]['locationDescription']['value']
+            if located_at:
+                return located_at
+            
+            else:
+                return None
+        except:
             return None
-        
+            
             
 #print(get_location('Q108399636'))
 
@@ -225,10 +338,10 @@ def get_address(wikidata_id) -> str:
         try:
             results = response['results']['bindings'] #get list of all the response results
             
-            coordinate = results[0]['coordinatesLabel']['value']
+            address = results[0]['streetLabel']['value']
 
-            if coordinate:
-                return coordinate
+            if address:
+                return address
 
             else:
                 return None
@@ -285,5 +398,13 @@ def get_monumentid(title) -> str:
 
 
 
-for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
-    print(file, get_username(file), get_monumentid(file), get_address(get_monumentid(file)), get_coordinate(get_monumentid(file)), get_location(get_monumentid(file)))
+#for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
+    #print(file, get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil'), get_last_modified(file), get_username(file), get_monumentid(file), get_address(get_monumentid(file)), get_coordinate(get_monumentid(file)), get_location(get_monumentid(file)))
+
+import pywikibot
+wikidata = pywikibot.Site('wikidata', 'wikidata')
+page = pywikibot.ItemPage(wikidata, 'Q511405')
+item_dict = page.get()
+
+
+#api call for account created

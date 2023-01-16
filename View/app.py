@@ -7,7 +7,7 @@ Created on Wed Dec 28 10:21:37 2022
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from WikiLovesMonument_Database import get_all_files_cat, get_username, get_location, get_coordinate, get_address, get_monumentid
+from WLMfunctions import get_all_files_cat, get_username, get_location, get_coordinate, get_address, get_monumentid, get_winners, get_categories, get_last_modified
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\WLM.db' 
@@ -121,23 +121,30 @@ class Monument(db.Model):
                                                                                    
 
 
-
 if __name__ == '__main__':
 
         db.create_all()
-        antique = Monument(wikidata_qid="Q123", country="Brazil", located_at="Peru Brazil", geographic_coordinates="1.0W 3.4S", address="22 4th st. Brazil", common_category="team|dry|test", image_filename="File: Antique.jpg", last_modified="2009-4-5 3:15:01")
+        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
+    
+                antique = Monument(wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_address(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
+                antique_photo = Photograph(filename=file, photograph=get_username(file), monument_id=get_monumentid(file), license="CC by SA", timestamp_uploaded="2022-2-9 10:30:11", timestamp_created="2022-2-9 10:30:11", camera_model="Camon", geographic_coordinates=get_coordinate(file), edition_year="2022")
+                
+                db.session.add_all([antique, antique_photo])
+                
+                antique_photo.detail.append(antique) #adding many-to-many relationship data
+                
+                db.session.add(antique_photo)
+
+                #db.session.add(antique)
+                db.session.commit() 
+                print('done')    
+
         lois = Person(username="Louis", date_created="2022-10-06 10:22:45")
-        antique_edition = Edition(year="2015", country="Brazil", place_1="File: Antique.jpg", place_2="File: Antique.jpg", place_3="File: Antique.jpg", place_4="File: Antique.jpg", place_5="File: Antique.jpg", place_6="File: Antique.jpg", place_7="File: Antique.jpg", place_8="File: Antique.jpg", place_9="File: Antique.jpg", place_10="File: Antique.jpg")
-        antique_photo = Photograph(filename="File: Antique.jpg", photograph="Louis", monument_id="Q123", license="CC by SA", timestamp_uploaded="2022-2-9 10:30:11", timestamp_created="2022-2-9 10:30:11", camera_model="Camon", geographic_coordinates="11W 23S", edition_year="WLM 2016")
-        
-        db.session.add_all([antique, lois, antique_edition, antique_photo])
-        
-        antique_photo.detail.append(antique) #adding many-to-many relationship data
+        antique_edition = Edition(year="2022", country="Brazil", place_1=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[0], place_2=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[1], place_3=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[2], place_4=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[3], place_5=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[4], place_6=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[5], place_7=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[6], place_8=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[7], place_9=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[8], place_10=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[9])
+                
         antique_edition.photograph1.append(antique_photo) #adding one-to-many relationship data i.e edition to photograph
         lois.photographs.append(antique_photo) #adding one-to-many relationship data i.e person to photograph
         
-        db.session.add(antique_photo)
-        db.session.add(antique_edition)
+        db.session.add(lois, antique_edition)
         db.session.commit() 
-        print('done')    
-
+        print('finally') 
