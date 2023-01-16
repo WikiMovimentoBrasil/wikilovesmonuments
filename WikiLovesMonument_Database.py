@@ -126,8 +126,13 @@ def get_culturalheritage(title) -> str:
 
 def get_location(wikidata_id) -> str:
     
-    sparql = """
+    if type(wikidata_id) == int:
+        return None
+
+    else:
+        sparql = """
             SELECT 
+            ?locationLabel
                 ?locationDescription  
                 WHERE {
                     VALUES ?item { wd:"""+wikidata_id+""" }
@@ -139,24 +144,28 @@ def get_location(wikidata_id) -> str:
                 }
             """
 
-    wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
-    response = wikiquery.query(sparql)
-    results = response['results']['bindings'] #get list of all the response results
-    
-    if results:
+        wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
+        response = wikiquery.query(sparql)
+        results = response['results']['bindings'] #get list of all the response results
+        
         located_at = results[0]['locationDescription']['value']
-        return located_at
-    
-    else:
-        return None
+        if located_at:
+            return located_at
+        
+        else:
+            return None
         
             
-#print(get_location('Q10270275'))
+#print(get_location('Q108399636'))
 
 
 def get_coordinate(wikidata_id) -> str:
     
-    sparql = """
+    if type(wikidata_id) == int:
+        return None
+
+    else:
+        sparql = """
                 SELECT 
                       ?locationDescription  
                       ?streetLabel
@@ -172,24 +181,30 @@ def get_coordinate(wikidata_id) -> str:
                     }
                 """
 
-    wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
-    response = wikiquery.query(sparql)
-    results = response['results']['bindings'] #get list of all the response results
-    
-    if results:
-        coordinate = results[0]['coordinatesLabel']['value']
- 
-        return coordinate
-
-    else:
-        return None
-        
+        wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
+        response = wikiquery.query(sparql)
+        try:
+            results = response['results']['bindings'] #get list of all the response results
             
-#print(get_coordinate('Q10270275'))
+            coordinate = results[0]['coordinatesLabel']['value']
+
+            if coordinate:
+                return coordinate
+
+            else:
+                return None
+        except:
+            return None
+            
+            
+#print(get_coordinate('Q108399636'))
 
 def get_address(wikidata_id) -> str:
-    
-    sparql = """
+    if type(wikidata_id) == int:
+        return None
+
+    else:
+        sparql = """
                 SELECT 
                       ?locationDescription  
                       ?streetLabel
@@ -205,19 +220,23 @@ def get_address(wikidata_id) -> str:
                     }
                 """
 
-    wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
-    response = wikiquery.query(sparql)
-    results = response['results']['bindings'] #get list of all the response results
-    
-    if results:
-        address = results[0]['streetLabel']['value']
-        return address
-    
-    else:
-        return None
-        
+        wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
+        response = wikiquery.query(sparql)
+        try:
+            results = response['results']['bindings'] #get list of all the response results
             
-##get_address('Q10270275')
+            coordinate = results[0]['coordinatesLabel']['value']
+
+            if coordinate:
+                return coordinate
+
+            else:
+                return None
+        except:
+            return None
+ 
+            
+#print(get_address('Q108399636'))
 
 def get_monumentid(title) -> str:
     
@@ -263,5 +282,8 @@ def get_monumentid(title) -> str:
     
 #get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg")
 
-for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
-    print(file, get_monumentid(file))
+
+
+
+for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
+    print(file, get_username(file), get_monumentid(file), get_address(get_monumentid(file)), get_coordinate(get_monumentid(file)), get_location(get_monumentid(file)))
