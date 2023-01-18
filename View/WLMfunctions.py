@@ -108,17 +108,17 @@ def get_culturalheritage(title) -> str:
         if type(wikitext.split('Brazil|')) == list:
             lines = wikitext.split('Brazil|')
             if len(lines) == 1:
-                return 0
+                return None
             else:
                 cultural_heritage = lines[1].split('}}')[0]
                 return cultural_heritage
             
         
         else:
-            return 0
+            return None
    
     else:
-        return 0
+        return None
     
 #get_culturalheritage("File:A fauna e flora local em metal.JPG")
 
@@ -202,10 +202,9 @@ def get_last_modified(title) -> str:
 
     Args:
         title (string): the title of the commons file
-        lang(string): the particular wikipedia api needed eg en, fr, commons
-
+        
     Returns:
-        DateTimeOriginal|Categories|License|LicenseUrl|ImageDescription|Credit|GPSLatitude|GPSLongitude
+        the datetime the file was modified
     """
     
     url="https://commons.wikimedia.org/w/api.php"
@@ -233,123 +232,70 @@ def get_last_modified(title) -> str:
 #print(get_last_modified("File:Supreme_Federal_Court_-_Statue.jpg"))
 
 
-def get_location(wikidata_id) -> str:
+def get_location(wikidata_qid) -> str:
     
-    if type(wikidata_id) == int:
-        return None
-
+    
+    wikidata = pywikibot.Site('wikidata', 'wikidata')
+    page = pywikibot.ItemPage(wikidata, wikidata_qid)
+    item_dict = page.get()
+    item_claim = item_dict['claims']['P131']
+    
+    if len(item_claim) > 1:
+        QID_item = [item_loc.target.getID() for item_loc in item_claim]
+        return QID_item
+    
+    elif len(item_claim) == 1:
+        item_loc = item_claim[0]
+        QID_item = item_loc.target.getID()
+        
+        return QID_item
+    
     else:
-        sparql = """
-            SELECT 
-            ?locationLabel
-                ?locationDescription  
-                WHERE {
-                    VALUES ?item { wd:"""+wikidata_id+""" }
-                    ?item wdt:P131 ?location.
-                    SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-                    OPTIONAL {?item 
-                        wdt:P6375 ?street ;
-                        wdt:P973 ?description ;}
-                }
-            """
-
-        wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
-        response = wikiquery.query(sparql)
-
-        try:
-            results = response['results']['bindings'] #get list of all the response results
-            
-            located_at = results[0]['locationDescription']['value']
-            if located_at:
-                return located_at
-            
-            else:
-                return None
-        except:
-            return None
-            
+        return None           
             
 #print(get_location('Q108399636'))
 
 
-def get_coordinate(wikidata_id) -> str:
+def get_coordinate(wikidata_qid) -> tuple:
     
-    if type(wikidata_id) == int:
+    
+    wikidata = pywikibot.Site('wikidata', 'wikidata')
+    page = pywikibot.ItemPage(wikidata, wikidata_qid)
+    item_dict = page.get()
+    
+    try:
+        item_new = item_dict['claims']['P625']
+        coords = item_new[0].toJSON()['mainsnak']['datavalue']['value']
+        
+        return tuple((coords['latitude'], coords['longitude']))
+    
+    except:
         return None
 
-    else:
-        sparql = """
-                SELECT 
-                      ?locationDescription  
-                      ?streetLabel
-                      ?coordinatesLabel
-                    WHERE {
-                      VALUES ?item { wd:"""+wikidata_id+""" }
-                      ?item wdt:P131 ?location;
-                      wdt:P625 ?coordinates.
-                      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-                      OPTIONAL {?item 
-                            wdt:P6375 ?street ;
-                            wdt:P973 ?description ;}
-                    }
-                """
+##print(get_coordinate('Q67204954'))
 
-        wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
-        response = wikiquery.query(sparql)
-        try:
-            results = response['results']['bindings'] #get list of all the response results
-            
-            coordinate = results[0]['coordinatesLabel']['value']
-
-            if coordinate:
-                return coordinate
-
-            else:
-                return None
-        except:
-            return None
-            
-            
-#print(get_coordinate('Q108399636'))
-
-def get_address(wikidata_id) -> str:
-    if type(wikidata_id) == int:
-        return None
-
-    else:
-        sparql = """
-                SELECT 
-                      ?locationDescription  
-                      ?streetLabel
-                      ?coordinatesLabel
-                    WHERE {
-                      VALUES ?item { wd:"""+wikidata_id+""" }
-                      ?item wdt:P131 ?location;
-                      wdt:P625 ?coordinates.
-                      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-                      OPTIONAL {?item 
-                            wdt:P6375 ?street ;
-                            wdt:P973 ?description ;}
-                    }
-                """
-
-        wikiquery = SparqlQuery() #sparqlquery that allows the use of sparql queries with python
-        response = wikiquery.query(sparql)
-        try:
-            results = response['results']['bindings'] #get list of all the response results
-            
-            address = results[0]['streetLabel']['value']
-
-            if address:
-                return address
-
-            else:
-                return None
-        except:
-            return None
+def get_street(wikidata_qid) -> str:
+    
+    
+    wikidata = pywikibot.Site('wikidata', 'wikidata')
+    page = pywikibot.ItemPage(wikidata, wikidata_qid)
+    item_dict = page.get()
+    item_claim = item_dict['claims']['P6375']
  
-            
-#print(get_address('Q108399636'))
+    
+    if len(item_claim) > 1:
+         
+        item_list = [claim_item.toJSON()['mainsnak']['datavalue']['value']['text'] for claim_item in item_claim]
+        return item_list 
+        
+    elif len(item_claim) == 1:
+        value = item_claim[0].toJSON()['mainsnak']['datavalue']['value']
+        return value['text']
+    
+    else:
+        return None
+    
+print(get_street('Q108399636'))
 
 def get_monumentid(title) -> str:
     
@@ -393,18 +339,105 @@ def get_monumentid(title) -> str:
     else:
         return 0
     
-#get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg")
+#print(get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg"))
 
 
+def get_license(title) -> str:
+    
+    """
+    the license of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
 
+    Args:
+        title (string): the title of the commons file
 
-#for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
-    #print(file, get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil'), get_last_modified(file), get_username(file), get_monumentid(file), get_address(get_monumentid(file)), get_coordinate(get_monumentid(file)), get_location(get_monumentid(file)))
+    Returns:
+        the license of the file 
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
 
-import pywikibot
-wikidata = pywikibot.Site('wikidata', 'wikidata')
-page = pywikibot.ItemPage(wikidata, 'Q511405')
-item_dict = page.get()
+    params = {
+            "action": "query",
+            "prop":"imageinfo",
+            "titles": title,
+            "iiprop":"extmetadata", #the type of file information to get
+            "format": "json",
+    }
 
+    resp = requests.get(url, params)
+    response = resp.json()
+    response_pages = response['query']['pages'] 
+    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+    
+    try:
+        for response_item in imageinfo: #loops through the imageinfo list
+            return response_item['extmetadata']['License']['value']
+    except:
+        return None   
 
-#api call for account created
+#print(get_license("File:Supreme_Federal_Court_-_Statue.jpg"))
+
+def get_registration(user) -> str:
+    
+    """
+    the date of registration of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        user (string): the name of the user that uploaded commons file
+
+    Returns:
+        the date, an account was created
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+
+    params = {
+            "action": "query",
+            "usprop":"registration",
+            "list": "users",
+            "ususers": user,
+            "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    return response['query']['users'][0]['registration']
+          
+print(get_registration("Caseyyy0000"))
+
+def get_camera_name(title) -> str:
+    
+    """
+    the name of the camera used for the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+
+    Returns:
+        the name of the camera 
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+    params = {
+            "action": "query",
+            "prop":"imageinfo", #Returns file information and upload history. from the api https://commons.wikimedia.org/w/api.php?action=help&modules=query
+            "titles":title,
+            "iiprop":"metadata", #Which file information to get eg metadata, size, dimension, mime
+            "iimetadataversion":"latest", #Version of metadata to use. If latest is specified, use latest version. Defaults to 1 for backwards compatibility
+            "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    response_imageinfo = response['query']['pages']  #selects the query -> pages dictionary from the api response
+    page_id = list(response_imageinfo.keys())[0] #automates how to extract information using the pageid than manually entering it
+    imageinfo = response_imageinfo[page_id]['imageinfo']
+    
+    try:
+        for response_value in imageinfo:
+            return response_value['metadata'][1]['value']
+    except:
+        return None
+    
+#print(get_camera_name("File:Supreme_Federal_Court_-_Statue.jpg"))
