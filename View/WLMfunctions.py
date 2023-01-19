@@ -160,143 +160,6 @@ def get_categories(title) -> str:
         return None   
 #print(get_categories("File:Supreme_Federal_Court_-_Statue.jpg"))
 
-
-def get_winners(cat_title) -> str:
-    
-    """
-    the filename of winners of WLM of particular years using the wikitext of the content from api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        title (string): the title of the commons file
-
-    Returns:
-        the filename
-    """
-    
-    url="https://commons.wikimedia.org/w/api.php"
-    params = {
-                "action": "query",
-                "generator":"categorymembers", #Get information about all categories used in the page
-                "gcmlimit": 500,
-                "gcmtitle": cat_title,
-                "gcmnamespace": 6, #the namespace here means it gets just files, but a 14 gets a subcategory
-                "format": "json",
-        }
-    
-    
-    s = requests.Session()
-    resp = s.get(url, params=params)
-    response = resp.json()
-    response_pages = response['query']['pages'] 
-    winners_list = [response_pages[x]['title'] for x in response_pages]
-    
-    return winners_list
-    
-#get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')
-
-
-def get_last_modified(title) -> str:
-    
-    """
-    the last date of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        title (string): the title of the commons file
-        
-    Returns:
-        the datetime the file was modified
-    """
-    
-    url="https://commons.wikimedia.org/w/api.php"
-
-    params = {
-            "action": "query",
-            "prop":"imageinfo",
-            "titles": title,
-            "iiprop":"extmetadata", #the type of file information to get
-            "format": "json",
-    }
-
-    resp = requests.get(url, params)
-    response = resp.json()
-    response_pages = response['query']['pages'] 
-    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
-    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
-    
-    try:
-        for response_item in imageinfo: #loops through the imageinfo list
-            return response_item['extmetadata']['DateTime']['value']
-    except:
-        return None
-
-#print(get_last_modified("File:Supreme_Federal_Court_-_Statue.jpg"))
-
-
-def get_location(wikidata_qid) -> str:
-    
-    
-    wikidata = pywikibot.Site('wikidata', 'wikidata')
-    page = pywikibot.ItemPage(wikidata, wikidata_qid)
-    item_dict = page.get()
-    item_claim = item_dict['claims']['P131']
-    
-    if len(item_claim) > 1:
-        QID_item = [item_loc.target.getID() for item_loc in item_claim]
-        return QID_item
-    
-    elif len(item_claim) == 1:
-        item_loc = item_claim[0]
-        QID_item = item_loc.target.getID()
-        
-        return QID_item
-    
-    else:
-        return None           
-            
-#print(get_location('Q108399636'))
-
-
-def get_coordinate(wikidata_qid) -> tuple:
-    
-    
-    wikidata = pywikibot.Site('wikidata', 'wikidata')
-    page = pywikibot.ItemPage(wikidata, wikidata_qid)
-    item_dict = page.get()
-    
-    try:
-        item_new = item_dict['claims']['P625']
-        coords = item_new[0].toJSON()['mainsnak']['datavalue']['value']
-        
-        return tuple((coords['latitude'], coords['longitude']))
-    
-    except:
-        return None
-
-##print(get_coordinate('Q67204954'))
-
-def get_street(wikidata_qid) -> str:
-    
-    
-    wikidata = pywikibot.Site('wikidata', 'wikidata')
-    page = pywikibot.ItemPage(wikidata, wikidata_qid)
-    item_dict = page.get()
-    item_claim = item_dict['claims']['P6375']
- 
-    
-    if len(item_claim) > 1:
-         
-        item_list = [claim_item.toJSON()['mainsnak']['datavalue']['value']['text'] for claim_item in item_claim]
-        return item_list 
-        
-    elif len(item_claim) == 1:
-        value = item_claim[0].toJSON()['mainsnak']['datavalue']['value']
-        return value['text']
-    
-    else:
-        return None
-    
-print(get_street('Q108399636'))
-
 def get_monumentid(title) -> str:
     
     """
@@ -339,7 +202,171 @@ def get_monumentid(title) -> str:
     else:
         return 0
     
-#print(get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg"))
+print(get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg"))
+
+
+
+def get_winners(title):
+    
+    url="https://commons.wikimedia.org/w/api.php"
+    params = {
+            "action": "parse",
+            'page': title,
+            'prop': 'wikitext',
+            'format': "json"
+        }
+
+    s = requests.Session()
+    resp = s.get(url, params=params)
+    response = resp.json()
+    wikitext = response['parse']['wikitext']['*']
+    
+    try:
+        lines = wikitext.split('Anchor|Brazil')[1]
+        brazil_raw = lines.split('\n\n==={{')[0]
+
+        new = brazil_raw.split('\n')
+
+        winners_list = [item.split('|')[0] for item in new[2:-1]]
+
+        if len(winners_list) > 10:
+
+            if title[21:25] == '2015':
+                new = winners_list[:20]
+                file_list = ['File:'+i for i in new[1:20:2]]
+                return file_list
+                
+            elif title[21:25] == '2019':
+                new = winners_list[:20]
+                file_list = ['File:'+i for i in new[0:20:2]]
+                return file_list  
+                
+            else:
+                new = winners_list[:10]
+                file_list = ['File:'+i for i in new if i[0:3] != 'File']
+                return file_list
+        
+        else:
+            
+            return winners_list
+    
+    except:
+        return None
+    
+print(get_winners('Wiki_Loves_Monuments_2015_winners#Brazil'))
+
+
+def get_last_modified(title) -> str:
+    
+    """
+    the last date of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+        
+    Returns:
+        the datetime the file was modified
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+
+    params = {
+            "action": "query",
+            "prop":"imageinfo",
+            "titles": title,
+            "iiprop":"extmetadata", #the type of file information to get
+            "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    response_pages = response['query']['pages'] 
+    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+    
+    try:
+        for response_item in imageinfo: #loops through the imageinfo list
+            return response_item['extmetadata']['DateTime']['value']
+    except:
+        return None
+
+#print(get_last_modified("File:Supreme_Federal_Court_-_Statue.jpg"))
+
+
+def get_location(file) -> str:
+    
+    try:
+        wikidata_qid = get_monumentid(file)
+
+        wikidata = pywikibot.Site('wikidata', 'wikidata')
+        page = pywikibot.ItemPage(wikidata, wikidata_qid)
+        item_dict = page.get()
+        item_claim = item_dict['claims']['P131']
+        
+        if len(item_claim) > 1:
+            QID_item = [item_loc.target.getID() for item_loc in item_claim]
+            return QID_item
+        
+        elif len(item_claim) == 1:
+            item_loc = item_claim[0]
+            QID_item = item_loc.target.getID()
+            
+            return QID_item
+        
+        else:
+            return None     
+    except:
+        return None      
+            
+print(get_location("File:2015-07-22-Estacao da Luz-01.jpg"))
+
+
+def get_coordinate(file) -> tuple:
+    
+    try:
+        wikidata_qid = get_monumentid(file)
+        wikidata = pywikibot.Site('wikidata', 'wikidata')
+        page = pywikibot.ItemPage(wikidata, wikidata_qid)
+        item_dict = page.get()
+        
+        try:
+            item_new = item_dict['claims']['P625']
+            coords = item_new[0].toJSON()['mainsnak']['datavalue']['value']
+            
+            return tuple((coords['latitude'], coords['longitude']))
+        
+        except:
+            return None
+    except:
+        None
+
+print(get_coordinate("File:2015-07-22-Estacao da Luz-01.jpg"))
+
+def get_street(file) -> str:
+    
+    try:
+        wikidata_qid = get_monumentid(file)
+        wikidata = pywikibot.Site('wikidata', 'wikidata')
+        page = pywikibot.ItemPage(wikidata, wikidata_qid)
+        item_dict = page.get()
+        item_claim = item_dict['claims']['P6375']
+    
+        
+        if len(item_claim) > 1:
+            
+            item_list = [claim_item.toJSON()['mainsnak']['datavalue']['value']['text'] for claim_item in item_claim]
+            return item_list 
+            
+        elif len(item_claim) == 1:
+            value = item_claim[0].toJSON()['mainsnak']['datavalue']['value']
+            return value['text']
+        
+        else:
+            return None
+    except:
+        return None
+
+print(get_street("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 
 def get_license(title) -> str:
@@ -378,7 +405,8 @@ def get_license(title) -> str:
 
 #print(get_license("File:Supreme_Federal_Court_-_Statue.jpg"))
 
-def get_registration(user) -> str:
+
+def get_registration(file) -> str:
     
     """
     the date of registration of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
@@ -392,19 +420,23 @@ def get_registration(user) -> str:
     
     url="https://commons.wikimedia.org/w/api.php"
 
+    user = get_username(file)
+
     params = {
-            "action": "query",
-            "usprop":"registration",
-            "list": "users",
-            "ususers": user,
-            "format": "json",
+        "action": "query",
+        "usprop":"registration",
+        "list": "users",
+        "ususers": user,
+        "format": "json",
     }
 
     resp = requests.get(url, params)
     response = resp.json()
-    return response['query']['users'][0]['registration']
-          
-print(get_registration("Caseyyy0000"))
+    user_reg = response['query']['users'][0]['registration']
+    return user_reg
+
+print(get_registration("File:2015-07-22-Estacao da Luz-01.jpg"))
+
 
 def get_camera_name(title) -> str:
     
@@ -430,11 +462,12 @@ def get_camera_name(title) -> str:
 
     resp = requests.get(url, params)
     response = resp.json()
-    response_imageinfo = response['query']['pages']  #selects the query -> pages dictionary from the api response
-    page_id = list(response_imageinfo.keys())[0] #automates how to extract information using the pageid than manually entering it
-    imageinfo = response_imageinfo[page_id]['imageinfo']
     
     try:
+        response_imageinfo = response['query']['pages']  #selects the query -> pages dictionary from the api response
+        page_id = list(response_imageinfo.keys())[0] #automates how to extract information using the pageid than manually entering it
+        imageinfo = response_imageinfo[page_id]['imageinfo']
+    
         for response_value in imageinfo:
             return response_value['metadata'][1]['value']
     except:
