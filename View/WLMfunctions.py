@@ -158,6 +158,7 @@ def get_categories(title) -> str:
 
     except:
         return None   
+
 #print(get_categories("File:Supreme_Federal_Court_-_Statue.jpg"))
 
 def get_monumentid(title) -> str:
@@ -191,19 +192,18 @@ def get_monumentid(title) -> str:
             lines = wikitext.split('MonumentID|')
            
             if len(lines) == 1:
-                return 0
+                return None
             else:
                 monument_id = lines[1].split('}}')[0]
                 return monument_id
             
         else:
-            return 0
+            return None
    
     else:
-        return 0
+        return None
     
-print(get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg"))
-
+#print(get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg"))
 
 
 def get_winners(title):
@@ -224,9 +224,7 @@ def get_winners(title):
     try:
         lines = wikitext.split('Anchor|Brazil')[1]
         brazil_raw = lines.split('\n\n==={{')[0]
-
         new = brazil_raw.split('\n')
-
         winners_list = [item.split('|')[0] for item in new[2:-1]]
 
         if len(winners_list) > 10:
@@ -253,7 +251,7 @@ def get_winners(title):
     except:
         return None
     
-print(get_winners('Wiki_Loves_Monuments_2015_winners#Brazil'))
+#print(get_winners('Wiki_Loves_Monuments_2015_winners#Brazil'))
 
 
 def get_last_modified(title) -> str:
@@ -292,6 +290,46 @@ def get_last_modified(title) -> str:
 
 #print(get_last_modified("File:Supreme_Federal_Court_-_Statue.jpg"))
 
+def get_last_created(title) -> str:
+    
+    """
+    the last date of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+        lang(string): the particular wikipedia api needed eg en, fr, commons
+
+    Returns:
+        DateTimeOriginal
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+
+    params = {
+        "action": "query",
+        "prop":"imageinfo",
+        "titles": title,
+        "iiprop":"commonmetadata", #the type of file information to get
+        "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    response_pages = response['query']['pages'] 
+    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+    
+    for response_item in imageinfo: #loops through the imageinfo list
+        try:
+            time = response_item['commonmetadata']
+            for timedata in time:
+                if timedata['name'] == 'DateTimeOriginal':
+                
+                    return timedata['value']
+        except:
+            return None
+
+print(get_last_created("File:A entrada do Castelo de Brennand em Recife.jpg"))
 
 def get_location(file) -> str:
     
@@ -318,7 +356,7 @@ def get_location(file) -> str:
     except:
         return None      
             
-print(get_location("File:2015-07-22-Estacao da Luz-01.jpg"))
+#print(get_location("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 
 def get_coordinate(file) -> tuple:
@@ -340,7 +378,7 @@ def get_coordinate(file) -> tuple:
     except:
         None
 
-print(get_coordinate("File:2015-07-22-Estacao da Luz-01.jpg"))
+#print(get_coordinate("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 def get_street(file) -> str:
     
@@ -366,7 +404,7 @@ def get_street(file) -> str:
     except:
         return None
 
-print(get_street("File:2015-07-22-Estacao da Luz-01.jpg"))
+#print(get_street("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 
 def get_license(title) -> str:
@@ -435,7 +473,7 @@ def get_registration(file) -> str:
     user_reg = response['query']['users'][0]['registration']
     return user_reg
 
-print(get_registration("File:2015-07-22-Estacao da Luz-01.jpg"))
+#print(get_registration("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 
 def get_camera_name(title) -> str:
@@ -474,3 +512,72 @@ def get_camera_name(title) -> str:
         return None
     
 #print(get_camera_name("File:Supreme_Federal_Court_-_Statue.jpg"))
+
+def get_unique_username(cat_title) -> str:
+    
+    """
+    unique username of a specific file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+
+    Returns:
+        name of user that uploaded the file
+    """
+    userlist=[]
+    for title in get_all_files_cat(cat_title):
+    
+        url="https://commons.wikimedia.org/w/api.php"
+
+        params = {
+                "action": "query",
+                "prop":"imageinfo",
+                "titles": title,
+                "iiprop":"user", #the type of file information to get
+                "format": "json",
+        }
+
+        s = requests.Session()
+        resp = s.get(url, params=params)
+        response = resp.json()
+        response_pages = response['query']['pages'] 
+        page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+        userinfo = response_pages[page_id]['imageinfo'][0]['user'] # retrieves the value of item imageinfo
+        if userinfo not in userlist:
+            userlist.append( userinfo)
+    return userlist
+    
+#print(get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'))
+
+def get_unique_registration(user) -> str:
+    
+    """
+    the unique date of registration of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        user (string): the name of the user that uploaded commons file
+
+    Returns:
+        the date, an account was created
+    """
+    
+    url="https://commons.wikimedia.org/w/api.php"
+
+    
+    params = {
+        "action": "query",
+        "usprop":"registration",
+        "list": "users",
+        "ususers": user,
+        "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    user_reg = response['query']['users'][0]['registration']
+    return user_reg
+
+'''
+for user in get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
+    print(get_unique_registration(user))
+'''

@@ -7,7 +7,7 @@ Created on Wed Dec 28 10:21:37 2022
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from WLMfunctions import get_all_files_cat, get_username, get_location, get_coordinate, get_address, get_monumentid, get_winners, get_categories, get_last_modified
+from WLMfunctions import get_all_files_cat, get_username, get_culturalheritage, get_location, get_coordinate, get_street, get_monumentid, get_winners, get_categories, get_last_modified, get_last_created, get_camera_name, get_license, get_registration, get_unique_username, get_unique_registration
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\WLM.db' 
@@ -124,10 +124,11 @@ class Monument(db.Model):
 if __name__ == '__main__':
 
         db.create_all()
-        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
+        '''
+        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
     
-                antique = Monument(wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_address(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
-                antique_photo = Photograph(filename=file, photograph=get_username(file), monument_id=get_monumentid(file), license="CC by SA", timestamp_uploaded="2022-2-9 10:30:11", timestamp_created="2022-2-9 10:30:11", camera_model="Camon", geographic_coordinates=get_coordinate(file), edition_year="2022")
+                antique = Monument(wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
+                antique_photo = Photograph(filename=file, photograph=get_username(file), monument_id=get_culturalheritage(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), geographic_coordinates=get_coordinate(file), edition_year="2015")
                 
                 db.session.add_all([antique, antique_photo])
                 
@@ -137,14 +138,16 @@ if __name__ == '__main__':
 
                 #db.session.add(antique)
                 db.session.commit() 
-                print('done')    
+                print('done')  
+        '''  
 
-        lois = Person(username="Louis", date_created="2022-10-06 10:22:45")
-        antique_edition = Edition(year="2022", country="Brazil", place_1=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[0], place_2=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[1], place_3=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[2], place_4=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[3], place_5=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[4], place_6=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[5], place_7=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[6], place_8=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[7], place_9=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[8], place_10=get_winners('Category:Winners_of_Wiki_Loves_Monuments_2022_in_Brazil')[9])
+        for user in get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
+                lois = Person(username=user, date_created=get_unique_registration(user))
+                antique_edition = Edition(year="2015", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[9])
+                        
+                #antique_edition.photograph1.append(antique_photo) #adding one-to-many relationship data i.e edition to photograph
+                #lois.photographs.append(antique_photo) #adding one-to-many relationship data i.e person to photograph
                 
-        antique_edition.photograph1.append(antique_photo) #adding one-to-many relationship data i.e edition to photograph
-        lois.photographs.append(antique_photo) #adding one-to-many relationship data i.e person to photograph
-        
-        db.session.add(lois, antique_edition)
-        db.session.commit() 
-        print('finally') 
+                db.session.add_all([lois, antique_edition])
+                db.session.commit() 
+                print('finally') 
