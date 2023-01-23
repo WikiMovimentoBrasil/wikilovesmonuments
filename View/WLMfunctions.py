@@ -329,7 +329,7 @@ def get_last_created(title) -> str:
         except:
             return None
 
-print(get_last_created("File:A entrada do Castelo de Brennand em Recife.jpg"))
+#print(get_last_created("File:A entrada do Castelo de Brennand em Recife.jpg"))
 
 def get_location(file) -> str:
     
@@ -507,77 +507,11 @@ def get_camera_name(title) -> str:
         imageinfo = response_imageinfo[page_id]['imageinfo']
     
         for response_value in imageinfo:
-            return response_value['metadata'][1]['value']
+            for name in response_value['metadata']:
+                if name['name'] == 'Model':
+                    return name['value']
     except:
         return None
     
 #print(get_camera_name("File:Supreme_Federal_Court_-_Statue.jpg"))
 
-def get_unique_username(cat_title) -> str:
-    
-    """
-    unique username of a specific file on the homepage using api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        title (string): the title of the commons file
-
-    Returns:
-        name of user that uploaded the file
-    """
-    userlist=[]
-    for title in get_all_files_cat(cat_title):
-    
-        url="https://commons.wikimedia.org/w/api.php"
-
-        params = {
-                "action": "query",
-                "prop":"imageinfo",
-                "titles": title,
-                "iiprop":"user", #the type of file information to get
-                "format": "json",
-        }
-
-        s = requests.Session()
-        resp = s.get(url, params=params)
-        response = resp.json()
-        response_pages = response['query']['pages'] 
-        page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
-        userinfo = response_pages[page_id]['imageinfo'][0]['user'] # retrieves the value of item imageinfo
-        if userinfo not in userlist:
-            userlist.append( userinfo)
-    return userlist
-    
-#print(get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'))
-
-def get_unique_registration(user) -> str:
-    
-    """
-    the unique date of registration of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        user (string): the name of the user that uploaded commons file
-
-    Returns:
-        the date, an account was created
-    """
-    
-    url="https://commons.wikimedia.org/w/api.php"
-
-    
-    params = {
-        "action": "query",
-        "usprop":"registration",
-        "list": "users",
-        "ususers": user,
-        "format": "json",
-    }
-
-    resp = requests.get(url, params)
-    response = resp.json()
-    user_reg = response['query']['users'][0]['registration']
-    return user_reg
-
-'''
-for user in get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
-    print(get_unique_registration(user))
-'''

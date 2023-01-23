@@ -7,7 +7,7 @@ Created on Wed Dec 28 10:21:37 2022
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from WLMfunctions import get_all_files_cat, get_username, get_culturalheritage, get_location, get_coordinate, get_street, get_monumentid, get_winners, get_categories, get_last_modified, get_last_created, get_camera_name, get_license, get_registration, get_unique_username, get_unique_registration
+from WLMfunctions import get_all_files_cat, get_username, get_culturalheritage, get_location, get_coordinate, get_street, get_monumentid, get_winners, get_categories, get_last_modified, get_last_created, get_camera_name, get_license, get_registration
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\WLM.db' 
@@ -15,10 +15,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
 class Person(db.Model):
         id = db.Column(db.Integer, primary_key=True)
-        username = db.Column(db.String)
+        username = db.Column(db.String, unique=True)
         date_created = db.Column(db.Text)
         photographs = db.relationship("Photograph", backref="Person")
         
@@ -31,8 +30,8 @@ class Person(db.Model):
 
 class Edition(db.Model):
         id = db.Column(db.Integer, primary_key=True)
-        year = db.Column(db.Integer)
-        country = db.Column(db.String)
+        year = db.Column(db.Integer, unique=True)
+        country = db.Column(db.String, unique=True)
         place_1 = db.Column(db.String)
         place_2 = db.Column(db.String)
         place_3 = db.Column(db.String)
@@ -71,7 +70,7 @@ monument_photograph = db.Table("monument_photograph",
 
 class Photograph(db.Model):
         id = db.Column(db.Integer, primary_key=True)
-        filename = db.Column(db.String)
+        filename = db.Column(db.String, unique=True)
         photograph = db.Column(db.String)
         monument_id = db.Column(db.String)
         license = db.Column(db.String)
@@ -85,7 +84,7 @@ class Photograph(db.Model):
         detail = db.relationship("Monument", secondary=monument_photograph, backref="photo_details")
         
 
-        def __init__(self, filename, photograph, monument_id, license, timestamp_uploaded, timestamp_created, camera_model, geographic_coordinates, edition_year):
+        def __init__(self, filename, photograph, monument_id, license, timestamp_uploaded, timestamp_created, camera_model, geographic_coordinates, edition_year, person_id, edition_id):
                 self.filename = filename
                 self.photograph = photograph
                 self.monument_id = monument_id
@@ -95,7 +94,8 @@ class Photograph(db.Model):
                 self.camera_model =  camera_model
                 self.geographic_coordinates = geographic_coordinates
                 self.edition_year =  edition_year
-                                                                                 
+                self.person_id = person_id
+                self.edition_id = edition_id                                          
 
 class Monument(db.Model):
         id = db.Column(db.Integer, primary_key=True)
@@ -118,31 +118,46 @@ class Monument(db.Model):
                 self.common_category = common_category
                 self.image_filename = image_filename
                 self.last_modified = last_modified
-                                                                                   
+
+def get_or_create(session, model, **args):
+    '''
+    Creates an object or returns the object if exists
+    credit to Kevin @ StackOverflow
+    from: http://stackoverflow.com/questions/2546207/does-sqlalchemy-have-an-equivalent-of-djangos-get-or-create
+    '''
+
+    instance = session.query(model).filter_by(**args).first()
+    if instance:
+        return instance
+    else:
+        instance = model(**args)
+        db.session.add(instance)
+        return instance                                                                                   
 
 
 if __name__ == '__main__':
 
         db.create_all()
-        '''
+        
         for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
     
-                antique = Monument(wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
-                antique_photo = Photograph(filename=file, photograph=get_username(file), monument_id=get_culturalheritage(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), geographic_coordinates=get_coordinate(file), edition_year="2015")
-                
+                antique = get_or_create(db.session, Monument, wikidata_qid=get_culturalheritage(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
+                user = get_or_create(db.session, Person, username=get_username(file), date_created=get_registration(file))
+                antique_edition = get_or_create(db.session, Edition, year="2015", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[9])
+                antique_photo = get_or_create(db.session, Photograph, filename=file, photograph=get_username(file), monument_id=get_culturalheritage(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), geographic_coordinates=get_coordinate(file), edition_year="2015", person_id=user.id, edition_id=antique_edition.id)
+                        
                 db.session.add_all([antique, antique_photo])
                 
                 antique_photo.detail.append(antique) #adding many-to-many relationship data
+                user.photographs.append(antique_photo)
                 
-                db.session.add(antique_photo)
-
-                #db.session.add(antique)
                 db.session.commit() 
                 print('done')  
-        '''  
+        
 
+        '''
         for user in get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
-                lois = Person(username=user, date_created=get_unique_registration(user))
+                lois = Person(
                 antique_edition = Edition(year="2015", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[9])
                         
                 #antique_edition.photograph1.append(antique_photo) #adding one-to-many relationship data i.e edition to photograph
@@ -150,4 +165,4 @@ if __name__ == '__main__':
                 
                 db.session.add_all([lois, antique_edition])
                 db.session.commit() 
-                print('finally') 
+                print('finally') '''
