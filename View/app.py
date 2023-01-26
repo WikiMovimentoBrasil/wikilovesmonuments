@@ -5,9 +5,10 @@ Created on Wed Dec 28 10:21:37 2022
 @author: NWANDU KELECHUKWU
 """
 
+from sqlalchemy import exc
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from WLMfunctions import get_all_files_cat, get_username, get_culturalheritage, get_location, get_coordinate, get_street, get_monumentid, get_winners, get_categories, get_last_modified, get_last_created, get_camera_name, get_license, get_registration
+from WLMfunctions import get_all_files_cat, get_username, get_location, get_coordinate, get_street, get_monumentid, get_winners, get_categories, get_last_modified, get_last_created, get_camera_name, get_license, get_registration
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\WLM.db' 
@@ -31,7 +32,7 @@ class Person(db.Model):
 class Edition(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         year = db.Column(db.Integer, unique=True)
-        country = db.Column(db.String, unique=True)
+        country = db.Column(db.String)
         place_1 = db.Column(db.String)
         place_2 = db.Column(db.String)
         place_3 = db.Column(db.String)
@@ -99,7 +100,7 @@ class Photograph(db.Model):
 
 class Monument(db.Model):
         id = db.Column(db.Integer, primary_key=True)
-        wikidata_qid = db.Column(db.String)
+        wikidata_qid = db.Column(db.String, unique=True)
         country = db.Column(db.String)
         located_at = db.Column(db.String)
         geographic_coordinates = db.Column(db.Text)
@@ -129,6 +130,7 @@ def get_or_create(session, model, **args):
     instance = session.query(model).filter_by(**args).first()
     if instance:
         return instance
+        
     else:
         instance = model(**args)
         db.session.add(instance)
@@ -137,32 +139,25 @@ def get_or_create(session, model, **args):
 
 if __name__ == '__main__':
 
-        db.create_all()
+        #db.create_all()
         
-        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
-    
-                antique = get_or_create(db.session, Monument, wikidata_qid=get_culturalheritage(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
-                user = get_or_create(db.session, Person, username=get_username(file), date_created=get_registration(file))
-                antique_edition = get_or_create(db.session, Edition, year="2015", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[9])
-                antique_photo = get_or_create(db.session, Photograph, filename=file, photograph=get_username(file), monument_id=get_culturalheritage(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), geographic_coordinates=get_coordinate(file), edition_year="2015", person_id=user.id, edition_id=antique_edition.id)
+        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2021_in_Brazil'):
+                try:
+                        antique = get_or_create(db.session, Monument, wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
+                        user = get_or_create(db.session, Person, username=get_username(file), date_created=get_registration(file))
+                        antique_edition = get_or_create(db.session, Edition, year="2021", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2021_winners#Brazil')[9])
+                        antique_photo = get_or_create(db.session, Photograph, filename=file, photograph=get_username(file), monument_id=get_monumentid(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), geographic_coordinates=get_coordinate(file), edition_year="2021", person_id=user.id, edition_id=antique_edition.id)
+                                
+                        db.session.add_all([antique, antique_photo])
                         
-                db.session.add_all([antique, antique_photo])
-                
-                antique_photo.detail.append(antique) #adding many-to-many relationship data
-                user.photographs.append(antique_photo)
-                
-                db.session.commit() 
-                print('done')  
+                        antique_photo.detail.append(antique) #adding many-to-many relationship data
+                        user.photographs.append(antique_photo)
+                        
+                        db.session.commit() 
+                        print('done') 
+
+                except exc.IntegrityError:
+                        db.session.rollback()
         
 
-        '''
-        for user in get_unique_username('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil'):
-                lois = Person(
-                antique_edition = Edition(year="2015", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2015_winners#Brazil')[9])
-                        
-                #antique_edition.photograph1.append(antique_photo) #adding one-to-many relationship data i.e edition to photograph
-                #lois.photographs.append(antique_photo) #adding one-to-many relationship data i.e person to photograph
-                
-                db.session.add_all([lois, antique_edition])
-                db.session.commit() 
-                print('finally') '''
+        

@@ -78,51 +78,6 @@ def get_username(title) -> str:
 #get_username("File:2015-07-22-Estacao da Luz-01.jpg")
 
 
-def get_culturalheritage(title) -> str:
-    
-    """
-    the cultural heritage id of a specific file using the wikitext of the content from api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        title (string): the title of the commons file
-
-    Returns:
-        the monument id of the file
-    """
-    
-    url="https://commons.wikimedia.org/w/api.php"
-    params = {
-                "action": "parse",
-                'page': title,
-                'prop': 'wikitext',
-                'format': "json"
-            }
-    
-    s = requests.Session()
-    resp = s.get(url, params=params)
-    response = resp.json()
-    wikitext = response['parse']['wikitext']['*']
-    
-    if wikitext:
-        
-        if type(wikitext.split('Brazil|')) == list:
-            lines = wikitext.split('Brazil|')
-            if len(lines) == 1:
-                return None
-            else:
-                cultural_heritage = lines[1].split('}}')[0]
-                return cultural_heritage
-            
-        
-        else:
-            return None
-   
-    else:
-        return None
-    
-#get_culturalheritage("File:A fauna e flora local em metal.JPG")
-
-
 def get_categories(title) -> str:
     
     """
@@ -192,7 +147,14 @@ def get_monumentid(title) -> str:
             lines = wikitext.split('MonumentID|')
            
             if len(lines) == 1:
-                return None
+                if type(wikitext.split('Brazil|')) == list:
+                    lines = wikitext.split('Brazil|')
+
+                    if len(lines) == 1:
+                        return None
+                    else:
+                        monument_id = lines[1].split('}}')[0]
+                        return monument_id
             else:
                 monument_id = lines[1].split('}}')[0]
                 return monument_id
@@ -203,8 +165,7 @@ def get_monumentid(title) -> str:
     else:
         return None
     
-#print(get_monumentid("File:Supreme_Federal_Court_-_Statue.jpg"))
-
+#print(get_monumentid("File:10092015-IMG_0444.jpg"))
 
 def get_winners(title):
     
@@ -343,7 +304,7 @@ def get_location(file) -> str:
         
         if len(item_claim) > 1:
             QID_item = [item_loc.target.getID() for item_loc in item_claim]
-            return QID_item
+            return str(QID_item)
         
         elif len(item_claim) == 1:
             item_loc = item_claim[0]
@@ -371,7 +332,7 @@ def get_coordinate(file) -> tuple:
             item_new = item_dict['claims']['P625']
             coords = item_new[0].toJSON()['mainsnak']['datavalue']['value']
             
-            return tuple((coords['latitude'], coords['longitude']))
+            return str(tuple((coords['latitude'], coords['longitude'])))
         
         except:
             return None
@@ -393,7 +354,7 @@ def get_street(file) -> str:
         if len(item_claim) > 1:
             
             item_list = [claim_item.toJSON()['mainsnak']['datavalue']['value']['text'] for claim_item in item_claim]
-            return item_list 
+            return str(item_list)
             
         elif len(item_claim) == 1:
             value = item_claim[0].toJSON()['mainsnak']['datavalue']['value']
