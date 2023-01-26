@@ -202,7 +202,7 @@ def get_winners(title):
                 
             else:
                 new = winners_list[:10]
-                file_list = ['File:'+i for i in new if i[0:3] != 'File']
+                file_list = ['File:'+i if 'File' not in i[0:4] else i for i in new]
                 return file_list
         
         else:
