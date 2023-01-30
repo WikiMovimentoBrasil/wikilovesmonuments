@@ -206,7 +206,6 @@ def get_winners(title):
                 return file_list
         
         else:
-            
             return winners_list
     
     except:
