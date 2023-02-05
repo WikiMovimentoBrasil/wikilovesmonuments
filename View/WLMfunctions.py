@@ -2,7 +2,7 @@ import requests
 import json
 import re
 import pywikibot #import pywikibot dependencies
-from pywikibot.data.sparql import SparqlQuery #import dependencies for sparql query
+
 
 def get_all_files_cat(cat_title) -> list:
     
@@ -42,7 +42,6 @@ def get_all_files_cat(cat_title) -> list:
     return files_list
 
 #get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2015_in_Brazil')
-
 
 
 def get_username(title) -> str:
@@ -318,7 +317,6 @@ def get_location(file) -> str:
             
 #print(get_location("File:2015-07-22-Estacao da Luz-01.jpg"))
 
-
 def get_coordinate(file) -> tuple:
     
     try:
@@ -402,7 +400,6 @@ def get_license(title) -> str:
         return None   
 
 #print(get_license("File:Supreme_Federal_Court_-_Statue.jpg"))
-
 
 def get_registration(file) -> str:
     

@@ -1,0 +1,12 @@
+Flask
+pyyaml
+flask_babel
+requests
+roman
+requests_oauthlib
+gspread
+oauth2client
+google-api-python-client
+jinja2==3.0.3
+pandas
+pywikibot

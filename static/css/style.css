@@ -1,0 +1,17 @@
+:root {
+  --red: #a93226;
+  --white-font: #f4f6f7;
+}
+
+.navbar {
+  color: var(--white-font);
+  background-color: var(--red);
+}
+
+button:hover {
+  background-color: var(--white-font);
+  color: black;
+}
+.user {
+  height: 30px;
+}
