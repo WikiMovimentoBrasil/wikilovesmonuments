@@ -1,17 +1,104 @@
 :root {
   --red: #a93226;
-  --white-font: #f4f6f7;
+  --white-font: #f7f9f9;
+  --black: #212f3d;
+  --box-bg: #ec7063;
+  --box-shadow: #1c4e80;
 }
 
-.navbar {
+nav.navbar .navbar-nav .nav-item .nav-link {
   color: var(--white-font);
+  margin: 0 10px;
+}
+
+nav.navbar .navbar-brand {
+  color: var(--white-font);
+  margin: 0 10px;
+}
+
+nav.navbar {
   background-color: var(--red);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+nav.container-fluid {
+  margin: 0 20px;
+  color: var(--white-font) !important;
+}
+
+form:focus {
+  background-color: var(--white-font);
+  outline: none;
+}
+
+button.navbar-toggler {
+  background-color: var(--white-font);
+}
+
+button.navbar-toggler:focus,
+button.navbar-toggler:active,
+button.navbar-toggler-icon:focus {
+  outline: none;
+}
+
+button.btn {
+  border: 1px solid var(--white-font);
 }
 
 button:hover {
   background-color: var(--white-font);
-  color: black;
+  color: var(--black);
+  border: 1px solid var(--black);
 }
+
 .user {
   height: 30px;
+}
+.top-board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  margin: 2rem 0;
+}
+
+.bottom-board {
+  display: flex;
+}
+
+.bottom-left,
+.bottom-right {
+  background-color: var(--box-bg);
+}
+
+.top-one {
+  margin-bottom: 2rem;
+  height: 200px;
+  border: 1px solid var(--black);
+  width: 35%;
+  display: flex;
+  justify-self: center;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+}
+
+.top-two {
+  margin-bottom: 2rem;
+  height: 200px;
+  width: 35%;
+  display: flex;
+  justify-self: center;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+}
+
+.top-two-left,
+.top-two-right {
+  border: 1px solid var(--black);
+  margin: auto;
+  height: 200px;
+  width: 35%;
 }

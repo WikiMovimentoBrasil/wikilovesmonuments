@@ -9,9 +9,12 @@ app = Flask(__name__)
 # which tells the application which URL should call
 # the associated function.
 @app.route('/')
-# ‘/’ URL is bound with hello_world() function.
-def hello_world():
+def dashboard():
     return render_template('index.html')
+
+@app.route('/stats')
+def ranking():
+    return render_template('stats.html')
  
 # main driver function
 if __name__ == '__main__':
