@@ -1,9 +1,10 @@
 :root {
-  --red: #a93226;
-  --white-font: #f7f9f9;
-  --black: #212f3d;
-  --box-bg: #ec7063;
-  --box-shadow: #1c4e80;
+  --red: #b32424;
+  --white-font: #eaecf0;
+  --black: #202122;
+  --box-red: #d33;
+  --box-blue: #2a4b8d;
+  --blue: #36c;
 }
 
 nav.navbar .navbar-nav .nav-item .nav-link {
@@ -55,22 +56,6 @@ button:hover {
 .user {
   height: 30px;
 }
-.top-board {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  justify-items: center;
-  margin: 2rem 0;
-}
-
-.bottom-board {
-  display: flex;
-}
-
-.bottom-left,
-.bottom-right {
-  background-color: var(--box-bg);
-}
 
 .top-one {
   margin-bottom: 2rem;
@@ -78,6 +63,7 @@ button:hover {
   border: 1px solid var(--black);
   width: 35%;
   display: flex;
+  flex-direction: column;
   justify-self: center;
   justify-content: center;
   align-self: center;
@@ -87,10 +73,10 @@ button:hover {
 .top-two {
   margin-bottom: 2rem;
   height: 200px;
-  width: 35%;
+  width: 100%;
   display: flex;
   justify-self: center;
-  justify-content: center;
+  justify-content: space-around;
   align-self: center;
   align-items: center;
 }
@@ -98,7 +84,73 @@ button:hover {
 .top-two-left,
 .top-two-right {
   border: 1px solid var(--black);
-  margin: auto;
+  display: flex;
+  flex-direction: column;
   height: 200px;
-  width: 35%;
+  width: 40%;
+  justify-self: center;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+}
+
+.stats-top {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  margin: 2rem 0;
+}
+
+.top-board {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.top-three {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  margin: 2rem 0;
+}
+
+.bottom-board {
+  display: flex;
+  justify-content: center;
+}
+
+.bottom-left,
+.bottom-right {
+  background-color: var(--box-red);
+  height: 150px;
+  width: 40%;
+  margin: auto;
+}
+
+.box {
+  height: 180px;
+  width: 90vw;
+  margin: auto;
+  background-color: var(--blue);
+  box-shadow: -5px -5px 9px var(--box-blue), 5px 5px 9px rgba(94, 104, 121, 0.3);
+}
+
+.countdown-display {
+  color: var(--white-font);
+}
+
+@media (max-width: 850px) {
+  .top-three,
+  .top-board {
+    width: 100%;
+  }
+
+  .stats-top {
+    flex-direction: column;
+  }
 }

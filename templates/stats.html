@@ -1,18 +1,101 @@
 {% extends 'navbar.html' %} {% block content %}
-<div class="container">
-  <div class="top-board">
-    <div class="top-one">1</div>
-    <div class="top-two">
-      <div class="top-two-left">2</div>
-      <div class="top-two-right">3</div>
+<div class="stats">
+  <div class="stats-top">
+    <div class="top-board">
+      <div class="top-one">
+        <img
+          class="user"
+          src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
+          alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
+        />
+      </div>
+      <div class="top-two">
+        <div class="top-two-left">
+          <img
+            class="user"
+            src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
+            alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
+          />
+        </div>
+        <div class="top-two-right">
+          <img
+            class="user"
+            src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
+            alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
+          />
+        </div>
+      </div>
+    </div>
+    <div class="top-three">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">User</th>
+            <th scope="col">Filename</th>
+            <th scope="col">Wikidata QID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">4</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">5</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">6</th>
+            <td>Larry the Bird</td>
+            <td>Thornton</td>
+            <td>@twitter</td>
+          </tr>
+          <tr>
+            <th scope="row">7</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">8</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">9</th>
+            <td>Larry the Bird</td>
+            <td>Thornton</td>
+            <td>@twitter</td>
+          </tr>
+          <tr>
+            <th scope="row">10</th>
+            <td>Larry the Bird</td>
+            <td>Thornton</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  <div class="top-three">
-    <div class="top-three-center">4,5,6,7,8,9,10</div>
-  </div>
   <div class="bottom-board">
-    <div class="bottom-left">LEFT</div>
-    <div class="bottom-right">RIGHT</div>
+    <div class="bottom-left">
+      <div class="previous-one">
+        <h3>YEAR 2021</h3>
+        <p>Total Contribution: 1000</p>
+      </div>
+    </div>
+    <div class="bottom-right">
+      <div class="previous-two">
+        <h3>YEAR 2022</h3>
+        <p>Total Contribution: 1000</p>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
