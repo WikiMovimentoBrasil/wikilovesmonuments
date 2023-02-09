@@ -130,18 +130,52 @@ button:hover {
   height: 150px;
   width: 40%;
   margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -5px -5px 9px var(--red), 5px 5px 9px rgba(94, 104, 121, 0.3);
 }
 
 .box {
   height: 180px;
-  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin: auto;
   background-color: var(--blue);
+  border-radius: 0 0 20px 20px;
   box-shadow: -5px -5px 9px var(--box-blue), 5px 5px 9px rgba(94, 104, 121, 0.3);
 }
 
 .countdown-display {
   color: var(--white-font);
+}
+
+.dashboard-stats {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#myChart,
+.blank {
+  width: 50%;
+  height: 50vh;
+}
+
+.blank {
+  border: 1px solid var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+.blank p {
+  font-weight: 300;
+  font-size: large;
 }
 
 @media (max-width: 850px) {
@@ -150,7 +184,13 @@ button:hover {
     width: 100%;
   }
 
-  .stats-top {
+  .stats-top,
+  .dashboard-stats {
     flex-direction: column;
+  }
+
+  #myChart,
+  .blank {
+    width: 100%;
   }
 }

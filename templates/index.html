@@ -1,5 +1,58 @@
 {% extends 'navbar.html' %} {% block content %}
 <div class="box">
-  <h2 id="countdown-display" class="countdown-display"></h2>
+  <p class="announcement">Countdown</p>
+  <h1 id="countdown-display" class="countdown-display"></h1>
+</div>
+<div class="dashboard-stats">
+  <div class="user-stats">
+    <canvas id="myChart"></canvas>
+  </div>
+  <script>
+    var xValues = ["2015", "2016", "2018", "2019", "2020", "2021", "2022"];
+    var yValues = [
+      "{{puser2015}}",
+      "{{puser2016}}",
+      "{{puser2018}}",
+      "{{puser2019}}",
+      "{{puser2020}}",
+      "{{puser2021}}",
+      "{{puser2022}}",
+    ];
+    var barColors = [
+      "red",
+      "green",
+      "blue",
+      "orange",
+      "brown",
+      "pink",
+      "yellow",
+      "purple",
+    ];
+
+    new Chart("myChart", {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [
+          {
+            backgroundColor: barColors,
+            data: yValues,
+          },
+        ],
+      },
+      options: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: "Your Contribution over the years in Wiki Loves Monument Brazil Competition",
+        },
+      },
+    });
+  </script>
+
+  <div class="blank">
+    <h2>Your Contribution in the last competition</h2>
+    <p>{{user_cont}}</p>
+  </div>
 </div>
 {% endblock %}

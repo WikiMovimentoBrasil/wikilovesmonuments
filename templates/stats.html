@@ -8,6 +8,12 @@
           src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
           alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
         />
+        <p>
+          <a
+            href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_1])}}"
+            >{{edition2.place_1}}</a
+          >
+        </p>
       </div>
       <div class="top-two">
         <div class="top-two-left">
@@ -16,6 +22,12 @@
             src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
             alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
           />
+          <p>
+            <a
+              href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_2])}}"
+              >{{edition2.place_2}}</a
+            >
+          </p>
         </div>
         <div class="top-two-right">
           <img
@@ -23,6 +35,12 @@
             src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
             alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
           />
+          <p>
+            <a
+              href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_3])}}"
+              >{{edition2.place_3}}</a
+            >
+          </p>
         </div>
       </div>
     </div>
@@ -41,43 +59,78 @@
             <th scope="row">4</th>
             <td>Mark</td>
             <td>Otto</td>
-            <td>@mdo</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_4])}}"
+                >{{edition2.place_4}}</a
+              >
+            </td>
           </tr>
           <tr>
             <th scope="row">5</th>
             <td>Jacob</td>
             <td>Thornton</td>
-            <td>@fat</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_5])}}"
+                >{{edition2.place_5}}</a
+              >
+            </td>
           </tr>
           <tr>
             <th scope="row">6</th>
             <td>Larry the Bird</td>
             <td>Thornton</td>
-            <td>@twitter</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_6])}}"
+                >{{edition2.place_6}}</a
+              >
+            </td>
           </tr>
           <tr>
             <th scope="row">7</th>
             <td>Mark</td>
             <td>Otto</td>
-            <td>@mdo</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_7])}}"
+                >{{edition2.place_7}}</a
+              >
+            </td>
           </tr>
           <tr>
             <th scope="row">8</th>
             <td>Jacob</td>
             <td>Thornton</td>
-            <td>@fat</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_8])}}"
+                >{{edition2.place_8}}</a
+              >
+            </td>
           </tr>
           <tr>
             <th scope="row">9</th>
             <td>Larry the Bird</td>
             <td>Thornton</td>
-            <td>@twitter</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_9])}}"
+                >{{edition2.place_9}}</a
+              >
+            </td>
           </tr>
           <tr>
             <th scope="row">10</th>
             <td>Larry the Bird</td>
             <td>Thornton</td>
-            <td>@twitter</td>
+            <td>
+              <a
+                href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2.place_10])}}"
+                >{{edition2.place_10}}</a
+              >
+            </td>
           </tr>
         </tbody>
       </table>
@@ -87,13 +140,13 @@
     <div class="bottom-left">
       <div class="previous-one">
         <h3>YEAR 2021</h3>
-        <p>Total Contribution: 1000</p>
+        <p>Total Contribution: {{photograph1}}</p>
       </div>
     </div>
     <div class="bottom-right">
       <div class="previous-two">
         <h3>YEAR 2022</h3>
-        <p>Total Contribution: 1000</p>
+        <p>Total Contribution: {{photograph2}}</p>
       </div>
     </div>
   </div>
