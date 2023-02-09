@@ -40,7 +40,11 @@ def ranking():
     edition2022 = db.session.query(edition).filter_by(year=2022).all()
     photograph2022 = db.session.query(photograph).filter_by(edition_year="2022").count()
     photograph2021 = db.session.query(photograph).filter_by(edition_year="2021").count()
+    ch = db.session.query(photograph).filter_by(edition_year="2015", person_id=14).all()
+    e1 = db.session.query(edition).filter_by(year=2022).subquery()
     
+    ch1 = db.session.query(photograph).filter_by(filename=str(edition2022[0].place_1)).all()
+    print(ch1, str(edition2022[0].place_1), ch[0].filename)
     #print(edition2022[0])
     #print(photograph2022)
     return render_template('stats.html', edition2=edition2022[0], photograph1=photograph2021, photograph2=photograph2022)
