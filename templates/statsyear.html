@@ -1,5 +1,15 @@
 {% extends 'navbar.html' %} {% block content %}
 <div class="stats">
+  <div class="year-stats">
+    <a href="/stats/2022">
+      <div class="year-one">
+        <div class="one-year">
+          <h3>YEAR 2022</h3>
+          <p>Total Contribution: {{photographyear}}</p>
+        </div>
+      </div>
+    </a>
+  </div>
   <div class="stats-top">
     <div class="top-board">
       <div class="top-one">
@@ -141,35 +151,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-  <div class="bottom-board">
-    <a href="/stats/2022"
-      ><div class="bottom-one">
-        <div class="previous-one">
-          <h3>YEAR 2022</h3>
-          <p>Total Contribution: {{photograph2}}</p>
-        </div>
-      </div></a
-    >
-
-    <div class="bottom-two">
-      <div class="previous-two">
-        <h3>YEAR 2021</h3>
-        <p>Total Contribution: {{photograph1}}</p>
-      </div>
-    </div>
-    <div class="bottom-three">
-      <div class="previous-two">
-        <h3>YEAR 2020</h3>
-        <p>Total Contribution: {{photograph0}}</p>
-      </div>
-    </div>
-    <div class="bottom-four">
-      <div class="previous-two">
-        <h3>YEAR 2019</h3>
-        <p>Total Contribution: {{photograph9}}</p>
-      </div>
     </div>
   </div>
 </div>

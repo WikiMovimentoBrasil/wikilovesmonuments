@@ -6,6 +6,8 @@ Created on Wed Dec 28 10:21:37 2022
 """
 from flask import Flask
 from flask import render_template
+from markupsafe import escape
+
 # Flask constructor takes the name of
 # current module (__name__) as argument.
 
@@ -32,7 +34,6 @@ def dashboard():
     puser2021 = db.session.query(photograph).filter_by(edition_year="2021",person_id=1).count()
     puser2022 = db.session.query(photograph).filter_by(edition_year="2022",person_id=1).count()
     
-    #print(puser2015, puser2016, puser2018, puser2019, puser2020, puser2021, puser2022)
     return render_template('index.html', user_cont=puser, puser2015=puser2015, puser2016=puser2016, puser2018=puser2018, puser2019=puser2019, puser2020=puser2020, puser2021=puser2021, puser2022=puser2022)
 
 @app.route('/stats')
@@ -40,15 +41,23 @@ def ranking():
     edition2022 = db.session.query(edition).filter_by(year=2022).all()
     photograph2022 = db.session.query(photograph).filter_by(edition_year="2022").count()
     photograph2021 = db.session.query(photograph).filter_by(edition_year="2021").count()
-    ch = db.session.query(photograph).filter_by(edition_year="2015", person_id=14).all()
-    e1 = db.session.query(edition).filter_by(year=2022).subquery()
+    photograph2020 = db.session.query(photograph).filter_by(edition_year="2020").count()
+    photograph2019 = db.session.query(photograph).filter_by(edition_year="2019").count()
+    #ch = db.session.query(photograph).filter_by(edition_year="2015", person_id=14).all()
+    #e1 = db.session.query(edition).filter_by(year=2022).subquery()
+    #ch2 = db.session.query(photograph).join(edition, edition.c.place_2 == photograph.c.filename).all()
     
-    ch1 = db.session.query(photograph).filter_by(filename=str(edition2022[0].place_1)).all()
-    print(ch1, str(edition2022[0].place_1), ch[0].filename)
-    #print(edition2022[0])
-    #print(photograph2022)
-    return render_template('stats.html', edition2=edition2022[0], photograph1=photograph2021, photograph2=photograph2022)
- 
+    return render_template('stats.html', edition2=edition2022[0], photograph1=photograph2021, photograph2=photograph2022, photograph0=photograph2020, photograph9=photograph2019)
+
+
+@app.route('/stats/<year>')
+def stats_year(year):
+    editionyear = db.session.query(edition).filter_by(year=int(year)).all()
+    photographyear = db.session.query(photograph).filter_by(edition_year=year).count()
+    print(year)
+    # show the user profile for that user
+    return render_template('statsyear.html', editionyear=editionyear[0], photographyear=photographyear)
+
 # main driver function
 if __name__ == '__main__':
  
