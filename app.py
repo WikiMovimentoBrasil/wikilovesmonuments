@@ -39,24 +39,29 @@ def dashboard():
 @app.route('/stats')
 def ranking():
     edition2022 = db.session.query(edition).filter_by(year=2022).all()
-    photograph2022 = db.session.query(photograph).filter_by(edition_year="2022").count()
-    photograph2021 = db.session.query(photograph).filter_by(edition_year="2021").count()
-    photograph2020 = db.session.query(photograph).filter_by(edition_year="2020").count()
+    photograph2015 = db.session.query(photograph).filter_by(edition_year="2021").count()
+    photograph2016 = db.session.query(photograph).filter_by(edition_year="2020").count()
+    photograph2018 = db.session.query(photograph).filter_by(edition_year="2019").count()
     photograph2019 = db.session.query(photograph).filter_by(edition_year="2019").count()
+    photograph2020 = db.session.query(photograph).filter_by(edition_year="2020").count()
+    photograph2021 = db.session.query(photograph).filter_by(edition_year="2021").count()
+    photograph2022 = db.session.query(photograph).filter_by(edition_year="2022").count()
     #ch = db.session.query(photograph).filter_by(edition_year="2015", person_id=14).all()
     #e1 = db.session.query(edition).filter_by(year=2022).subquery()
     #ch2 = db.session.query(photograph).join(edition, edition.c.place_2 == photograph.c.filename).all()
     
-    return render_template('stats.html', edition2=edition2022[0], photograph1=photograph2021, photograph2=photograph2022, photograph0=photograph2020, photograph9=photograph2019)
+    return render_template('stats.html', edition2022=edition2022[0], photograph2015=photograph2015, photograph2016=photograph2016, photograph2018=photograph2018, photograph2019=photograph2019, photograph2020=photograph2020, photograph2021=photograph2021, photograph2022=photograph2022)
 
 
 @app.route('/stats/<year>')
 def stats_year(year):
     editionyear = db.session.query(edition).filter_by(year=int(year)).all()
     photographyear = db.session.query(photograph).filter_by(edition_year=year).count()
-    print(year)
+    photographeryear = db.session.query(photograph).filter_by(edition_year=year).group_by(photograph.c.photograph).all()
+    
+    print(photographeryear)
     # show the user profile for that user
-    return render_template('statsyear.html', editionyear=editionyear[0], photographyear=photographyear)
+    return render_template('statsyear.html', year=year, editionyear=editionyear[0], photographyear=photographyear)
 
 # main driver function
 if __name__ == '__main__':
