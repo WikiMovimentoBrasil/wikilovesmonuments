@@ -8,7 +8,6 @@
     <!--meta name="author" content="Patrick Kennedy" /-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
-    <title>Dashboard</title>
     <!-- styles -->
     <link
       rel="shortcut icon"
@@ -24,6 +23,21 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+      crossorigin=""
+    />
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+      crossorigin=""
+    ></script>
+
+    <title>Dashboard</title>
   </head>
 
   <body>
@@ -106,6 +120,7 @@
     <!-- .container -->
 
     <!-- scripts -->
+    <script src="{{ url_for('static', filename= 'js/leaflet.js') }}"></script>
     <script src="{{ url_for('static', filename= 'js/index.js') }}"></script>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script

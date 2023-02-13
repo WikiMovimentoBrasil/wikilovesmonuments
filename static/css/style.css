@@ -144,15 +144,20 @@ button:hover {
   flex-wrap: wrap;
 }
 
+.table a {
+  text-align: left;
+}
+
 .bottom-one {
   background-color: var(--box-red);
   height: 150px;
   width: 23%;
-  margin: auto;
+  margin: 20px 10px;
+  border-radius: 5px;
   padding: 20px 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   box-shadow: -5px -5px 9px var(--red), 5px 5px 9px rgba(94, 104, 121, 0.3);
 }
@@ -182,7 +187,7 @@ button:hover {
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 1.5rem;
+  padding: 2.5rem;
 }
 
 #myChart {
@@ -192,7 +197,6 @@ button:hover {
 
 .blank {
   width: 40%;
-
   height: 50vh;
   border: 1px solid var(--black);
   display: flex;
@@ -205,9 +209,40 @@ button:hover {
 }
 
 .blank p {
-  font-weight: 500;
-  font-size: 20%;
-  font-size: large;
+  font-weight: 700;
+  font-size: 35px;
+}
+
+.blank h2,
+.blank p {
+  text-align: center;
+}
+
+.stats-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.one-year {
+  padding: 20px;
+}
+
+.stat-tab {
+  margin: 20px 10px;
+  width: 40%;
+  height: 100px;
+  justify-content: space-around;
+  border-radius: 3%;
+  box-shadow: -5px -5px 9px var(--black), 5px 5px 9px rgba(94, 104, 121, 0.3);
+}
+
+.stat-tab h2,
+.stat-tab p {
+  text-align: center;
+}
+
+#map {
+  height: 100vh;
 }
 
 @media (max-width: 850px) {
@@ -224,5 +259,9 @@ button:hover {
   #myChart,
   .blank {
     width: 100%;
+  }
+
+  .table {
+    width: 90vw;
   }
 }

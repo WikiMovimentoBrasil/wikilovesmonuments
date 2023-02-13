@@ -1,7 +1,7 @@
 {% extends 'navbar.html' %} {% block content %}
 <div class="box">
-  <p class="announcement">Countdown</p>
-  <h1 id="countdown-display" class="countdown-display"></h1>
+  <h2 class="announcement">Countdown</h2>
+  <p id="countdown-display" class="countdown-display"></p>
 </div>
 <div class="dashboard-stats">
   <div class="user-stats">
@@ -55,4 +55,25 @@
     <p>{{user_cont}}</p>
   </div>
 </div>
-{% endblock %}
+<div id="map"></div>
+<script>
+  var map = L.map("map").setView([-14.2401, -53.1805], 13);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
+</script>
+
+{% for coord in coordinate %}{% if coord[0] != None %}
+
+<script>
+  var marker = L.marker([
+    "{{(''.join(coord[0][1:-1])).split(',')[0] }}",
+    "{{(''.join(coord[0][1:-1])).split(',')[1] }}",
+  ]).addTo(map);
+
+  marker.bindPopup("{{details[coordinate.index(coord)]}}").openPopup();
+</script>
+<!--<div>{{details }}</div>-->
+{% endif %} {% endfor %} {% endblock %}
