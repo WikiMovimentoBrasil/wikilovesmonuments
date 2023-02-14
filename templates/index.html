@@ -73,7 +73,7 @@
     "{{(''.join(coord[0][1:-1])).split(',')[1] }}",
   ]).addTo(map);
 
-  marker.bindPopup("{{details[coordinate.index(coord)]}}").openPopup();
+  marker.bindPopup("{{details[coordinate.index(coord)][0][0:]}}").openPopup();
 </script>
 <!--<div>{{details }}</div>-->
 {% endif %} {% endfor %} {% endblock %}

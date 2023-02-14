@@ -472,3 +472,41 @@ def get_camera_name(title) -> str:
     
 #print(get_camera_name("File:Supreme_Federal_Court_-_Statue.jpg"))
 
+def get_camera_coordinate(title) -> str:
+    
+    """
+    camera GPS coordinates where it was positioned to take a picture of a monument using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+
+    Returns:
+        GPSLatitude|GPSLongitude
+    """
+    
+    url ="https://commons.wikimedia.org/w/api.php"
+
+    params = {
+            "action": "query",
+            "prop":"imageinfo",
+            "titles": title,
+            "iiprop":"extmetadata", #the type of file information to get
+            "format": "json",
+    }
+
+    resp = requests.get(url, params)
+    response = resp.json()
+    try:
+        response_pages = response['query']['pages'] 
+        page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
+        imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+        
+        for response_item in imageinfo: #loops through the imageinfo list
+            lat = response_item['extmetadata']['GPSLatitude']['value']
+            long = response_item['extmetadata']['GPSLongitude']['value']
+            coords = str(tuple((lat, long)))
+            return coords
+    except:
+        return None
+
+#print(get_camera_coordinate('File:Açude_Cedro_-_Detalhe_do_acabamento_da_barragem_principal.jpg'))

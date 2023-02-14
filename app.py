@@ -28,7 +28,6 @@ monument = db.Table('Monument', db.metadata, autoload=True, autoload_with=db.eng
 @app.route('/')
 def dashboard():
     presentyear = date.today().year
-    #monumentid = "photograph id"
     puser = db.session.query(photograph).filter_by(edition_year=str(presentyear-1), person_id=1).count()
     puser2015 = db.session.query(photograph).filter_by(edition_year=str(presentyear-8),person_id=1).count()
     puser2016 = db.session.query(photograph).filter_by(edition_year=str(presentyear-7),person_id=1).count()
@@ -57,13 +56,13 @@ def ranking():
     photograph2021 = db.session.query(photograph).filter_by(edition_year=str(presentyear-2)).count()
     photograph2022 = db.session.query(photograph).filter_by(edition_year=str(presentyear-1)).count()
     #ch = db.session.query(photograph).filter_by(edition_year="2015", person_id=14).all()
-    e1 = db.session.query(edition).filter_by(year=2022).subquery()
-    #ch2 = db.session.query(photograph).join(edition, edition.c.place_2 == photograph.c.filename).all()
     
-    #data = db.session.query(photograph).filter_by(person_id=1).subquery()
-    dataa = db.session.query(photograph.c.photograph).join(e1, e1.c.place_1 == photograph.c.filename).all()
+    #ch2 = db.session.query(photograph).join(edition, edition.c.place_2 == photograph.c.filename).all()
     #mapdata = db.session.query(monument.c.geographic_coordinates).join(dataa, monument.c.wikidata_qid == dataa.c["photograph id"]).all()
-    print(dataa)
+    #data = db.session.query(photograph).filter_by(person_id=1).subquery()
+    e1 = db.session.query(edition).filter_by(year=2022).subquery()
+    dataa = db.session.query(photograph.c.photograph).join(e1, e1.c.place_1 == photograph.c.filename).all()
+    
     return render_template('stats.html', edition2022=edition2022[0], photograph2015=photograph2015, photograph2016=photograph2016, photograph2018=photograph2018, photograph2019=photograph2019, photograph2020=photograph2020, photograph2021=photograph2021, photograph2022=photograph2022)
 
 
@@ -73,7 +72,6 @@ def stats_year(year):
     photographyear = db.session.query(photograph).filter_by(edition_year=year).count()
     photographeryear = db.session.query(photograph).filter_by(edition_year=year).group_by(photograph.c.photograph).count()
     
-    print(photographeryear)
     # show the user profile for that user
     return render_template('statsyear.html', year=year, editionyear=editionyear[0], photographyear=photographyear, photographeryear=photographeryear)
 
