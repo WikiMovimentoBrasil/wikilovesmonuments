@@ -1,7 +1,9 @@
 {% extends 'navbar.html' %} {% block content %}
 <div class="stats">
   <div class="year-stats">
-    <a href="/stats/2022">
+    <a
+      href="{{ ''.join(['https://commons.wikimedia.org/wiki/Category:Images_from_Wiki_Loves_Monuments_', 'year', '_in_Brazil'])}}"
+    >
       <div class="year-one">
         <div class="one-year">
           <h2>YEAR {{year}} Statistics</h2>

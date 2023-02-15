@@ -336,7 +336,7 @@ def get_coordinate(file) -> tuple:
     except:
         None
 
-#print(get_coordinate("File:2015-07-22-Estacao da Luz-01.jpg"))
+#print(get_coordinate('File:Açude_Cedro_-_Detalhe_do_acabamento_da_barragem_principal.jpg'))
 
 def get_street(file) -> str:
     
@@ -502,9 +502,10 @@ def get_camera_coordinate(title) -> str:
         imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
         
         for response_item in imageinfo: #loops through the imageinfo list
-            lat = response_item['extmetadata']['GPSLatitude']['value']
-            long = response_item['extmetadata']['GPSLongitude']['value']
+            lat = float(response_item['extmetadata']['GPSLatitude']['value'])
+            long = float(response_item['extmetadata']['GPSLongitude']['value'])
             coords = str(tuple((lat, long)))
+            
             return coords
     except:
         return None

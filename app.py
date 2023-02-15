@@ -39,10 +39,13 @@ def dashboard():
     
     data = db.session.query(photograph).filter_by(person_id=1).subquery()
     dataa = db.session.query(monument_photograph).join(data, data.c.monument_id == monument_photograph.c["photograph id"]).subquery()
-    mapcoords = db.session.query(monument.c.geographic_coordinates).join(dataa, monument.c.wikidata_qid == dataa.c["photograph id"]).all()
-    mapdetails = db.session.query(monument.c.image_filename).join(dataa, monument.c.wikidata_qid == dataa.c["photograph id"]).all()
-    
-    return render_template('index.html', details=mapdetails, coordinate=mapcoords, user_cont=puser, puser2015=puser2015, puser2016=puser2016, puser2018=puser2018, puser2019=puser2019, puser2020=puser2020, puser2021=puser2021, puser2022=puser2022)
+    monumentcoords = db.session.query(monument.c.geographic_coordinates).join(dataa, monument.c.wikidata_qid == dataa.c["photograph id"]).all()
+    monumentdetails = db.session.query(monument.c.image_filename).join(dataa, monument.c.wikidata_qid == dataa.c["photograph id"]).all()
+    photographcoords = db.session.query(photograph.c.camera_coordinates).filter_by(person_id=1).all()
+    photographdetails = db.session.query(photograph.c.filename).filter_by(person_id=1).all()
+    print(photographcoords)
+
+    return render_template('index.html', photographdetails=photographdetails, photographcoordinate=photographcoords, monumentdetails=monumentdetails, monumentcoordinate=monumentcoords, user_cont=puser, puser2015=puser2015, puser2016=puser2016, puser2018=puser2018, puser2019=puser2019, puser2020=puser2020, puser2021=puser2021, puser2022=puser2022)
 
 @app.route('/stats')
 def ranking():
@@ -55,14 +58,10 @@ def ranking():
     photograph2020 = db.session.query(photograph).filter_by(edition_year=str(presentyear-3)).count()
     photograph2021 = db.session.query(photograph).filter_by(edition_year=str(presentyear-2)).count()
     photograph2022 = db.session.query(photograph).filter_by(edition_year=str(presentyear-1)).count()
-    #ch = db.session.query(photograph).filter_by(edition_year="2015", person_id=14).all()
     
-    #ch2 = db.session.query(photograph).join(edition, edition.c.place_2 == photograph.c.filename).all()
-    #mapdata = db.session.query(monument.c.geographic_coordinates).join(dataa, monument.c.wikidata_qid == dataa.c["photograph id"]).all()
-    #data = db.session.query(photograph).filter_by(person_id=1).subquery()
-    e1 = db.session.query(edition).filter_by(year=2022).subquery()
-    dataa = db.session.query(photograph.c.photograph).join(e1, e1.c.place_1 == photograph.c.filename).all()
-    
+    editionyear = db.session.query(edition).filter_by(year=str(presentyear-1)).subquery()
+    dataa = db.session.query(photograph).join(editionyear, editionyear.c.place_1 == photograph.c.filename).all()
+    print(dataa)
     return render_template('stats.html', edition2022=edition2022[0], photograph2015=photograph2015, photograph2016=photograph2016, photograph2018=photograph2018, photograph2019=photograph2019, photograph2020=photograph2020, photograph2021=photograph2021, photograph2022=photograph2022)
 
 
@@ -70,7 +69,7 @@ def ranking():
 def stats_year(year):
     editionyear = db.session.query(edition).filter_by(year=int(year)).all()
     photographyear = db.session.query(photograph).filter_by(edition_year=year).count()
-    photographeryear = db.session.query(photograph).filter_by(edition_year=year).group_by(photograph.c.photograph).count()
+    photographeryear = db.session.query(photograph).filter_by(edition_year=year).group_by(photograph.c.photographer).count()
     
     # show the user profile for that user
     return render_template('statsyear.html', year=year, editionyear=editionyear[0], photographyear=photographyear, photographeryear=photographeryear)

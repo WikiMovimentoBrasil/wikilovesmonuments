@@ -55,25 +55,65 @@
     <p>{{user_cont}}</p>
   </div>
 </div>
-<div id="map"></div>
-<script>
-  var map = L.map("map").setView([-14.2401, -53.1805], 13);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution:
-      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map);
-</script>
 
-{% for coord in coordinate %}{% if coord[0] != None %}
+<div class="map-title"><h2>MAP SHOWING MONUMENT AND CAMERA GPS LOCATION</h2></div>
+<div class="maps">
+  <div id="map"></div>
+  <script>
+    var map = L.map("map").setView([-14.2401, -53.1805], 13);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+  </script>
 
-<script>
-  var marker = L.marker([
-    "{{(''.join(coord[0][1:-1])).split(',')[0] }}",
-    "{{(''.join(coord[0][1:-1])).split(',')[1] }}",
-  ]).addTo(map);
+  {% for monumentcoord in monumentcoordinate %}{% if monumentcoord[0] != None %}
 
-  marker.bindPopup("{{details[coordinate.index(coord)][0][0:]}}").openPopup();
-</script>
-<!--<div>{{details }}</div>-->
-{% endif %} {% endfor %} {% endblock %}
+  <script>
+    var marker = L.marker([
+      "{{(''.join(monumentcoord[0][1:-1])).split(',')[0] }}",
+      "{{(''.join(monumentcoord[0][1:-1])).split(',')[1] }}",
+    ]).addTo(map);
+
+    marker
+      .bindPopup(
+        "{{monumentdetails[monumentcoordinate.index(monumentcoord)][0][0:]}}"
+      )
+      .openPopup();
+  </script>
+  <div>{{monumentcoord[0][1:-1]}}</div>
+  {% endif %} {% endfor %} 
+
+  
+    <div id="map1"></div>
+    <script>
+      var map1 = L.map("map1").setView([-14.2401, -53.1805], 13);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map1);
+    </script>
+
+    {% for photographcoord in photographcoordinate %}{% if photographcoord[0] != None
+    %}
+    {% set photocoordlat = photographcoord[0][1:-1].split(", ")[0] | float%}
+    {% set photocoordlong = photographcoord[0][1:-1].split(", ")[1] | float%}
+
+    <script>
+      var marker = L.marker([
+        "{{photocoordlat}}",
+        "{{photocoordlong}}",
+      ]).addTo(map1);
+
+      marker
+        .bindPopup(
+          "{{photographdetails[photographcoordinate.index(photographcoord)][0][0:]}}"
+        )
+        .openPopup();
+    </script>
+    <div>{{photocoordlat}}</div>
+    {% endif %} {% endfor %}{% endblock %}
+  </div>
+</div>

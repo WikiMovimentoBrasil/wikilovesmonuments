@@ -241,8 +241,25 @@ button:hover {
   text-align: center;
 }
 
-#map {
+#map,
+#map1 {
   height: 100vh;
+  width: 45%;
+}
+
+.maps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.map-title {
+  padding: 2rem 0;
+  width: 90%;
+  margin: auto;
+}
+.map-title h2 {
+  text-align: center;
 }
 
 @media (max-width: 850px) {
@@ -263,5 +280,12 @@ button:hover {
 
   .table {
     width: 90vw;
+  }
+  .maps {
+    flex-direction: column;
+  }
+  .map,
+  .map1 {
+    width: 90%;
   }
 }
