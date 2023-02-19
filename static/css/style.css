@@ -7,6 +7,10 @@
   --blue: #36c;
 }
 
+h2 {
+  margin: 10px 0 0 0;
+  text-align: center;
+}
 nav.navbar .navbar-nav .nav-item .nav-link {
   color: var(--white-font);
   margin: 0 10px;
@@ -78,6 +82,9 @@ button:hover {
   align-self: center;
   align-items: center;
   border-radius: 4%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   box-shadow: -5px -5px 9px var(--red), 5px 5px 9px rgba(94, 104, 121, 0.3);
 }
 
@@ -150,7 +157,7 @@ button:hover {
 
 .bottom-one {
   background-color: var(--box-red);
-  height: 150px;
+  height: 180px;
   width: 23%;
   margin: 20px 10px;
   border-radius: 5px;
@@ -198,6 +205,7 @@ button:hover {
 .blank {
   width: 40%;
   height: 50vh;
+  padding: 20px 0;
   border: 1px solid var(--black);
   display: flex;
   flex-direction: column;
@@ -222,6 +230,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 1.5rem 0;
 }
 .one-year {
   padding: 20px;
@@ -284,8 +293,10 @@ button:hover {
   .maps {
     flex-direction: column;
   }
-  .map,
-  .map1 {
+  #map,
+  #map1 {
+    margin: 10px 0;
     width: 90%;
+    height: 70vh;
   }
 }

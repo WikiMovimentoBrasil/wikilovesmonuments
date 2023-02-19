@@ -3,6 +3,8 @@
   <h2 class="announcement">Countdown</h2>
   <p id="countdown-display" class="countdown-display"></p>
 </div>
+
+  <h2>YOUR YEARLY STATISTICS</h2>
 <div class="dashboard-stats">
   <div class="user-stats">
     <canvas id="myChart"></canvas>
@@ -82,7 +84,6 @@
       )
       .openPopup();
   </script>
-  <div>{{monumentcoord[0][1:-1]}}</div>
   {% endif %} {% endfor %} 
 
   
@@ -98,14 +99,11 @@
 
     {% for photographcoord in photographcoordinate %}{% if photographcoord[0] != None
     %}
-    {% set photocoordlat = photographcoord[0][1:-1].split(", ")[0] | float%}
-    {% set photocoordlong = photographcoord[0][1:-1].split(", ")[1] | float%}
-
     <script>
       var marker = L.marker([
-        "{{photocoordlat}}",
-        "{{photocoordlong}}",
-      ]).addTo(map1);
+        "{{(''.join(photographcoord[0][1:-1])).split(',')[0] }}",
+      "{{(''.join(photographcoord[0][1:-1])).split(',')[1] }}",
+    ]).addTo(map1);
 
       marker
         .bindPopup(
@@ -113,7 +111,7 @@
         )
         .openPopup();
     </script>
-    <div>{{photocoordlat}}</div>
+    
     {% endif %} {% endfor %}{% endblock %}
   </div>
 </div>
