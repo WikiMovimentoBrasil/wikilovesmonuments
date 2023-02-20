@@ -66,9 +66,15 @@ button:hover {
   text-decoration: none;
   color: var(--black);
   display: block;
+
   text-align: center;
 }
 
+.top-board a {
+  text-shadow: 1px 1px 2px var(--red), 0 0 1em var(--box-blue),
+    0 0 0.2em var(--box-blue);
+  color: aliceblue;
+}
 .top-one {
   margin-bottom: 2rem;
   /*position: relative;*/
@@ -117,6 +123,9 @@ button:hover {
   align-self: center;
   align-items: center;
   border-radius: 4%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   box-shadow: -5px -5px 9px var(--box-blue), 5px 5px 9px rgba(94, 104, 121, 0.3);
 }
 
@@ -143,6 +152,7 @@ button:hover {
   justify-content: center;
   justify-items: center;
   margin: 2rem 0;
+  padding: 0 15px;
 }
 
 .bottom-board {
@@ -269,6 +279,20 @@ button:hover {
 }
 .map-title h2 {
   text-align: center;
+}
+
+.error {
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.error img {
+  height: 60vh;
+}
+.error h2 {
+  font-size: 24px;
 }
 
 @media (max-width: 850px) {

@@ -1,0 +1,9 @@
+{% extends 'navbar.html' %} {% block content %}
+<div class="error">
+  <h2>
+    This page does not exist or was removed! <br />
+    We suggest you go back home
+  </h2>
+  <img src="{{ url_for('static', filename= 'images/404.png') }}" />
+</div>
+{% endblock %}

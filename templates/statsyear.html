@@ -25,35 +25,26 @@
   <h2>WINNERS FOR YEAR {{year}}</h2>
   <div class="stats-top">
     <div class="top-board">
-      <div class="top-one">
-        <img
-          class="user"
-          src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
-          alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
-        />
-
-        <p>{{winner_1.photographer}}</p>
-
-        <p>
-          <a
-            href="{{''.join(['https://www.wikidata.org/wiki/',winner_1.monument_id])}}"
-            >{{winner_1.monument_id}}</a
-          >
-        </p>
+      {% set file = (editionyear.place_1).replace((editionyear.place_1)[0:5],
+      "")%} {% set url_file =
+      "https://commons.wikimedia.org/wiki/Special:FilePath/" + file | string%}
+      <div class="top-one" style="background-image: url('{{url_file}}')">
         <p>
           <a
             href="{{ ''.join(['https://commons.wikimedia.org/wiki/', editionyear.place_1])}}"
-            >{{editionyear.place_1}}</a
+            >{{editionyear.place_1}} by {{winner_1.photographer}}</a
           >
         </p>
       </div>
       <div class="top-two">
-        <div class="top-two-left">
-          <img
-            class="user"
-            src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
-            alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
-          />
+        {% set file2 = (editionyear.place_2).replace((editionyear.place_2)[0:5],
+        "")%} {% set url_file2 =
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file2 |
+        string%}
+        <div
+          class="top-two-left"
+          style="background-image: url('{{url_file2}}')"
+        >
           {#
           <p>{{winner_2.photographer}}</p>
           <p>
@@ -70,12 +61,14 @@
             >
           </p>
         </div>
-        <div class="top-two-right">
-          <img
-            class="user"
-            src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
-            alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
-          />
+        {% set file3 = (editionyear.place_3).replace((editionyear.place_3)[0:5],
+        "")%} {% set url_file3 =
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file3 |
+        string%}
+        <div
+          class="top-two-right"
+          style="background-image: url('{{url_file3}}')"
+        >
           {#
           <p>{{winner_3.photographer}}</p>
           <p>
@@ -99,9 +92,7 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">User</th>
-            <th scope="col">Wikidata QID</th>
-            <th scope="col">Filename</th>
+            <th scope="col">Winner</th>
           </tr>
         </thead>
         <tbody>

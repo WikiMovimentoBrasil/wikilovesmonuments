@@ -93,6 +93,14 @@ def stats_year(year):
     # show the user profile for that user
     return render_template('statsyear.html', year=year, editionyear=editionyear[0], photographyear=photographyear, photographeryear=photographeryear, winner_1=winner_1[0])#, winner_2=winner_2[0], winner_3=winner_3[0], winner_4=winner_4[0], winner_5=winner_5[0], winner_6=winner_6[0], winner_7=winner_7[0], winner_8=winner_8[0], winner_9=winner_9[0], winner_10=winner_10[0])
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html")
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template("404.html")
+
 # main driver function
 if __name__ == '__main__':
  

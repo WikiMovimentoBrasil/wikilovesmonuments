@@ -7,58 +7,57 @@
       "")%} {% set url_file =
       "https://commons.wikimedia.org/wiki/Special:FilePath/" + file | string%}
       <div class="top-one" style="background-image: url('{{url_file}}')">
-        <img
-          class="user"
-          src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
-          alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
-        />
         {#
-        <p>{{winner_1.photographer}}</p>
         <p>
           <a
             href="{{''.join(['https://www.wikidata.org/wiki/',winner_1.monument_id])}}"
-            >{{winner_1.monument_id}}</a
-          >
+            >{{winner_1.monument_id}}
+          </a>
         </p>
         #}
         <p>
           <a
             href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_1])}}"
-            >{{edition2022.place_1}}</a
-          >
+            >{{edition2022.place_1}} by
+          </a>
         </p>
       </div>
       <div class="top-two">
-        <div class="top-two-left">
-          <img
-            class="user"
-            src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
-            alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
-          />
+        {% set file2 = (edition2022.place_2).replace((edition2022.place_2)[0:5],
+        "")%} {% set url_file2 =
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file2 |
+        string%}
+        <div
+          class="top-two-left"
+          style="background-image: url('{{url_file2}}')"
+        >
           {#
-          <p>{{winner_2.photographer}}</p>
+
           <p>
             <a
               href="{{''.join(['https://www.wikidata.org/wiki/',winner_2.monument_id])}}"
-              >{{winner_2.monument_id}}</a
-            >
+              >{{winner_2.monument_id}}
+            </a>
           </p>
           #}
           <p>
             <a
               href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_2])}}"
-              >{{edition2022.place_2}}</a
-            >
+              >{{edition2022.place_2}}
+            </a>
           </p>
         </div>
-        <div class="top-two-right">
-          <img
-            class="user"
-            src="{{ url_for('static', filename= 'images/user-profile.svg') }}"
-            alt='{{ ("Winner on Wiki Loves Monuments Brasil") }}'
-          />
+
+        {% set file3 = (edition2022.place_3).replace((edition2022.place_3)[0:5],
+        "")%} {% set url_file3 =
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file3 |
+        string%}
+        <div
+          class="top-two-right"
+          style="background-image: url('{{url_file3}}')"
+        >
           {#
-          <p>{{winner_3.photographer}}</p>
+
           <p>
             <a
               href="{{''.join(['https://www.wikidata.org/wiki/',winner_3.monument_id])}}"
@@ -69,8 +68,8 @@
           <p>
             <a
               href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_3])}}"
-              >{{edition2022.place_3}}</a
-            >
+              >{{edition2022.place_3}}
+            </a>
           </p>
         </div>
       </div>
@@ -80,16 +79,14 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">User</th>
-            <th scope="col">Wikidata QID</th>
-            <th scope="col">Filename</th>
+            <th scope="col">Winner</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th scope="row">4</th>
             {#
-            <td>{{winner_4.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_4.monument_id])}}"
@@ -100,14 +97,14 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_4])}}"
-                >{{edition2022.place_4}}</a
-              >
+                >{{edition2022.place_4}} by
+              </a>
             </td>
           </tr>
           <tr>
             <th scope="row">5</th>
             {#
-            <td>{{winner_5.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_5.monument_id])}}"
@@ -118,14 +115,14 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_5])}}"
-                >{{edition2022.place_5}}</a
+                >{{edition2022.place_5}} by</a
               >
             </td>
           </tr>
           <tr>
             <th scope="row">6</th>
             {#
-            <td>{{winner_6.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_6.monument_id])}}"
@@ -136,14 +133,14 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_6])}}"
-                >{{edition2022.place_6}}</a
-              >
+                >{{edition2022.place_6}} by
+              </a>
             </td>
           </tr>
           <tr>
             <th scope="row">7</th>
             {#
-            <td>{{winner_7.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_7.monument_id])}}"
@@ -154,14 +151,14 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_7])}}"
-                >{{edition2022.place_7}}</a
-              >
+                >{{edition2022.place_7}} by
+              </a>
             </td>
           </tr>
           <tr>
             <th scope="row">8</th>
             {#
-            <td>{{winner_8.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_8.monument_id])}}"
@@ -172,14 +169,14 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_8])}}"
-                >{{edition2022.place_8}}</a
-              >
+                >{{edition2022.place_8}} by
+              </a>
             </td>
           </tr>
           <tr>
             <th scope="row">9</th>
             {#
-            <td>{{winner_9.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_9.monument_id])}}"
@@ -190,14 +187,14 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_9])}}"
-                >{{edition2022.place_9}}</a
-              >
+                >{{edition2022.place_9}} by
+              </a>
             </td>
           </tr>
           <tr>
             <th scope="row">10</th>
             {#
-            <td>{{winner_10.photographer}}</td>
+            <td></td>
             <td>
               <a
                 href="{{''.join(['https://www.wikidata.org/wiki/',winner_10.monument_id])}}"
@@ -208,8 +205,8 @@
             <td>
               <a
                 href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_10])}}"
-                >{{edition2022.place_10}}</a
-              >
+                >{{edition2022.place_10}} by
+              </a>
             </td>
           </tr>
         </tbody>
