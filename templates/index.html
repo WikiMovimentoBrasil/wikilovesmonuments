@@ -73,10 +73,17 @@
   {% for monumentcoord in monumentcoordinate %}{% if monumentcoord[0] != None %}
 
   <script>
+    var monumentIcon = L.icon({
+    iconUrl: '/static/images/monument.png',
+
+    iconSize:     [20, 20], // size of the icon
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
     var marker = L.marker([
       "{{(''.join(monumentcoord[0][1:-1])).split(',')[0] }}",
       "{{(''.join(monumentcoord[0][1:-1])).split(',')[1] }}",
-    ]).addTo(map);
+    ], {icon: monumentIcon}).addTo(map);
 
     marker
       .bindPopup(
@@ -100,10 +107,17 @@
     {% for photographcoord in photographcoordinate %}{% if photographcoord[0] != None
     %}
     <script>
+      var cameraIcon = L.icon({
+    iconUrl: '/static/images/camera.png',
+
+    iconSize:     [20, 20], // size of the icon
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
       var marker = L.marker([
         "{{(''.join(photographcoord[0][1:-1])).split(',')[0] }}",
       "{{(''.join(photographcoord[0][1:-1])).split(',')[1] }}",
-    ]).addTo(map1);
+    ], {icon:cameraIcon}).addTo(map1);
 
       marker
         .bindPopup(

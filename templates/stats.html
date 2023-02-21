@@ -5,7 +5,8 @@
     <div class="top-board">
       {% set file = (edition2022.place_1).replace((edition2022.place_1)[0:5],
       "")%} {% set url_file =
-      "https://commons.wikimedia.org/wiki/Special:FilePath/" + file | string%}
+      "https://commons.wikimedia.org/wiki/Special:FilePath/" + file +
+      "?width=250px" | string%}
       <div class="top-one" style="background-image: url('{{url_file}}')">
         {#
         <p>
@@ -15,62 +16,53 @@
           </a>
         </p>
         #}
-        <p>
-          <a
-            href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_1])}}"
-            >{{edition2022.place_1}} by
-          </a>
-        </p>
+        <a
+          href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_1])}}"
+          ><p>{{edition2022.place_1}} by</p>
+        </a>
       </div>
       <div class="top-two">
         {% set file2 = (edition2022.place_2).replace((edition2022.place_2)[0:5],
         "")%} {% set url_file2 =
-        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file2 |
-        string%}
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file2 +
+        "?width=250px" | string%}
         <div
           class="top-two-left"
           style="background-image: url('{{url_file2}}')"
         >
           {#
 
-          <p>
-            <a
-              href="{{''.join(['https://www.wikidata.org/wiki/',winner_2.monument_id])}}"
-              >{{winner_2.monument_id}}
-            </a>
-          </p>
+          <a
+            href="{{''.join(['https://www.wikidata.org/wiki/',winner_2.monument_id])}}"
+            >{{winner_2.monument_id}}
+          </a>
           #}
-          <p>
-            <a
-              href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_2])}}"
-              >{{edition2022.place_2}}
-            </a>
-          </p>
+
+          <a
+            href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_2])}}"
+            ><p>{{edition2022.place_2}}</p>
+          </a>
         </div>
 
         {% set file3 = (edition2022.place_3).replace((edition2022.place_3)[0:5],
         "")%} {% set url_file3 =
-        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file3 |
-        string%}
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file3 +
+        "?width=250px" | string%}
         <div
           class="top-two-right"
           style="background-image: url('{{url_file3}}')"
         >
           {#
 
-          <p>
-            <a
-              href="{{''.join(['https://www.wikidata.org/wiki/',winner_3.monument_id])}}"
-              >{{winner_3.monument_id}}</a
-            >
-          </p>
+          <a
+            href="{{''.join(['https://www.wikidata.org/wiki/',winner_3.monument_id])}}"
+            >{{winner_3.monument_id}}</a
+          >
           #}
-          <p>
-            <a
-              href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_3])}}"
-              >{{edition2022.place_3}}
-            </a>
-          </p>
+          <a
+            href="{{ ''.join(['https://commons.wikimedia.org/wiki/', edition2022.place_3])}}"
+            ><p>{{edition2022.place_3}}</p>
+          </a>
         </div>
       </div>
     </div>

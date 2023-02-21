@@ -27,44 +27,43 @@
     <div class="top-board">
       {% set file = (editionyear.place_1).replace((editionyear.place_1)[0:5],
       "")%} {% set url_file =
-      "https://commons.wikimedia.org/wiki/Special:FilePath/" + file | string%}
+      "https://commons.wikimedia.org/wiki/Special:FilePath/" + file +
+      "?width=250px" | string%}
       <div class="top-one" style="background-image: url('{{url_file}}')">
-        <p>
-          <a
-            href="{{ ''.join(['https://commons.wikimedia.org/wiki/', editionyear.place_1])}}"
-            >{{editionyear.place_1}} by {{winner_1.photographer}}</a
-          >
-        </p>
+        <a
+          href="{{ ''.join(['https://commons.wikimedia.org/wiki/', editionyear.place_1])}}"
+          ><p>{{editionyear.place_1}} by {{winner_1.photographer}}</p></a
+        >
       </div>
       <div class="top-two">
         {% set file2 = (editionyear.place_2).replace((editionyear.place_2)[0:5],
         "")%} {% set url_file2 =
-        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file2 |
-        string%}
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file2 +
+        "?width=250px" | string%}
         <div
           class="top-two-left"
           style="background-image: url('{{url_file2}}')"
         >
           {#
           <p>{{winner_2.photographer}}</p>
-          <p>
-            <a
-              href="{{''.join(['https://www.wikidata.org/wiki/',winner_2.monument_id])}}"
-              >{{winner_2.monument_id}}</a
-            >
-          </p>
+
+          <a
+            href="{{''.join(['https://www.wikidata.org/wiki/',winner_2.monument_id])}}"
+            ><p>{{winner_2.monument_id}} by</p></a
+          >
           <p>
             #}
             <a
               href="{{ ''.join(['https://commons.wikimedia.org/wiki/', editionyear.place_2])}}"
-              >{{editionyear.place_2}}</a
+              ><p>{{editionyear.place_2}}</p></a
             >
           </p>
         </div>
+
         {% set file3 = (editionyear.place_3).replace((editionyear.place_3)[0:5],
         "")%} {% set url_file3 =
-        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file3 |
-        string%}
+        "https://commons.wikimedia.org/wiki/Special:FilePath/" + file3 +
+        "?width=250px" | string%}
         <div
           class="top-two-right"
           style="background-image: url('{{url_file3}}')"
@@ -78,12 +77,10 @@
             >
           </p>
           #}
-          <p>
-            <a
-              href="{{ ''.join(['https://commons.wikimedia.org/wiki/', editionyear.place_3])}}"
-              >{{editionyear.place_3}}</a
-            >
-          </p>
+          <a
+            href="{{ ''.join(['https://commons.wikimedia.org/wiki/', editionyear.place_3])}}"
+            ><p>{{editionyear.place_3}}</p></a
+          >
         </div>
       </div>
     </div>
