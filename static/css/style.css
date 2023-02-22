@@ -71,7 +71,7 @@ button:hover {
 }
 
 .top-board a {
-  text-shadow: 1px 1px 2px var(--red), 0 0 1em var(--box-blue),
+  text-shadow: 3px 3px 4px var(--black), 0 0 1em var(--box-blue),
     0 0 0.2em var(--box-blue);
   color: aliceblue;
 }
