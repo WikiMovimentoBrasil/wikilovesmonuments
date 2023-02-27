@@ -277,7 +277,7 @@ button:hover {
 
 #map,
 #map1 {
-  height: 100vh;
+  height: 70vh;
   width: 45%;
 }
 
@@ -308,6 +308,22 @@ button:hover {
 }
 .error h2 {
   font-size: 24px;
+}
+
+.about {
+  margin: auto;
+  width: 90vw;
+  padding-top: 10px;
+}
+
+.about a {
+  text-decoration: none;
+}
+hr {
+  margin-top: 20px;
+}
+.active {
+  color: var(--white-font);
 }
 
 @media (max-width: 850px) {

@@ -55,6 +55,10 @@ def dashboard():
     #print(monumentdetails)
     return render_template('index.html', photographdetails=photographdetails, monumentdetails=monumentdetails,  photographcoordinate=photographcoords, monumentcoordinate=monumentcoords, user_cont=puser, puser2015=puser2015, puser2016=puser2016, puser2018=puser2018, puser2019=puser2019, puser2020=puser2020, puser2021=puser2021, puser2022=puser2022)
 
+@app.route('/about')
+def about():
+    return render_template("About.html")
+
 @app.route('/stats')
 def ranking():
     presentyear = date.today().year

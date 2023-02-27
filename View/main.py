@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from WLMfunctions import get_all_files_cat, get_username, get_location, get_coordinate, get_street, get_monumentid, get_winners, get_categories, get_last_modified, get_last_created, get_camera_name, get_license, get_registration, get_camera_coordinate
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\wikilovesmonuments.db' 
+app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\wikilovesmonument.db' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -64,7 +64,7 @@ class Edition(db.Model):
 
 class Monument(db.Model):
         id = db.Column(db.Integer, primary_key=True)
-        wikidata_qid = db.Column(db.String)
+        wikidata_qid = db.Column(db.String, unique=True)
         country = db.Column(db.String)
         located_at = db.Column(db.String)
         geographic_coordinates = db.Column(db.Text)
@@ -86,8 +86,8 @@ class Monument(db.Model):
 
 
 monument_photograph = db.Table("monument_photograph",
-        db.Column("monument id", db.Integer, db.ForeignKey("monument.id")),
-        db.Column("photograph id", db.Integer, db.ForeignKey("photograph.monument_id"))
+        db.Column("monument_id", db.Integer, db.ForeignKey("monument.id")),
+        db.Column("photograph_id", db.Integer, db.ForeignKey("photograph.monument_id"))
 )
 
 
@@ -122,47 +122,82 @@ class Photograph(db.Model):
 
 
 def get_or_create(session, model, **args):
-    '''
-    Creates an object or returns the object if exists
-    credit to Kevin @ StackOverflow
-    from: http://stackoverflow.com/questions/2546207/does-sqlalchemy-have-an-equivalent-of-djangos-get-or-create
-    '''
-
-    instance = session.query(model).filter_by(**args).first()
-    if instance:
-        return instance
+        '''
+        Creates an object or returns the object if exists
+        credit to Kevin @ StackOverflow
+        from: http://stackoverflow.com/questions/2546207/does-sqlalchemy-have-an-equivalent-of-djangos-get-or-create
+        '''
         
-    else:
-        instance = model(**args)
-        db.session.add(instance)
-        return instance                                                                                   
+        instance = session.query(model).filter_by(**args).first()
+                
+        if instance:
+                db.session.rollback()
+                return instance  
+                        
+        else:
+                instance = model(**args)
+                db.session.add(instance)
+                return instance  
+        
+
+
+                                                                                                        
 
 
 if __name__ == '__main__':
-#with app.app_context:
+
         db.create_all()
         
-        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2022_in_Brazil'):
+        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2018_in_Brazil'):
+                
+                user = get_or_create(db.session, Person, username=get_username(file), date_created=get_registration(file))
+                wlm_edition = get_or_create(db.session, Edition, year="2018", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[9])
+                wlm_monument = get_or_create(db.session, Monument, wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
+                wlm_photo = get_or_create(db.session, Photograph, filename=file, photographer=get_username(file), monument_id=get_monumentid(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), camera_coordinates=get_camera_coordinate(file), edition_year="2018", person_id=user.id, edition_id=wlm_edition.id)
+                                
+                
+                       
+
+                wlm_photo.detail.append(wlm_monument) #adding many-to-many relationship data
+                user.photographs.append(wlm_photo)
+                                
+                db.session.commit() 
+                print('done') 
+
+                
+
+
+
+'''if __name__ == '__main__':
+
+        db.create_all()
+        
+        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2018_in_Brazil'):
                 try:
                         user = get_or_create(db.session, Person, username=get_username(file), date_created=get_registration(file))
-                        wlm_edition = get_or_create(db.session, Edition, year="2022", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2022_winners#Brazil')[9])
+                        wlm_edition = get_or_create(db.session, Edition, year="2018", country="Brazil", place_1=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[0], place_2=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[1], place_3=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[2], place_4=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[3], place_5=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[4], place_6=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[5], place_7=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[6], place_8=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[7], place_9=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[8], place_10=get_winners('Wiki_Loves_Monuments_2018_winners#Brazil')[9])
                         wlm_monument = get_or_create(db.session, Monument, wikidata_qid=get_monumentid(file), country="Brazil", located_at=get_location(file), geographic_coordinates=get_coordinate(file), address=get_street(file), common_category=get_categories(file), image_filename=file, last_modified=get_last_modified(file))
-                        wlm_photo = get_or_create(db.session, Photograph, filename=file, photographer=get_username(file), monument_id=get_monumentid(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), camera_coordinates=get_camera_coordinate(file), edition_year="2022", person_id=user.id, edition_id=wlm_edition.id)
-                                
-                        #db.session.add_all([user, wlm_monument, wlm_edition, wlm_photo])
-                        db.session.add(user)
-                        db.session.add(wlm_edition)
-                        db.session.add(wlm_monument)
-                        db.session.add(wlm_photo)
 
-                        wlm_photo.detail.append(wlm_monument) #adding many-to-many relationship data
-                        user.photographs.append(wlm_photo)
-                                
+                        db.session.add_all([user, wlm_edition, wlm_monument])   
                         db.session.commit() 
-                        print('done') 
+                        print('done1') 
+
 
                 except exc.IntegrityError:
                         db.session.rollback()
         
 
-        
+        for file in get_all_files_cat('Category:Images_from_Wiki_Loves_Monuments_2018_in_Brazil'):
+                try:
+                        wlm_photo = get_or_create(db.session, Photograph, filename=file, photographer=get_username(file), monument_id=get_monumentid(file), license=get_license(file), timestamp_uploaded=get_last_modified(file), timestamp_created=get_last_created(file), camera_model=get_camera_name(file), camera_coordinates=get_camera_coordinate(file), edition_year="2018", person_id=user.id, edition_id=wlm_edition.id)
+                        db.session.add_all([wlm_photo])
+                        
+                        wlm_photo.detail.append(wlm_monument) #adding many-to-many relationship data
+                        user.photographs.append(wlm_photo)
+                                
+                        db.session.commit() 
+                        print('done2') 
+                except exc.IntegrityError:
+                        db.session.rollback()
+
+        '''
