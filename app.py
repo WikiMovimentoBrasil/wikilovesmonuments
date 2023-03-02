@@ -18,6 +18,7 @@ db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\wikilovesmonuments.db' 
 
+
 edition = db.Table('Edition', db.metadata, autoload=True, autoload_with=db.engine)
 photograph = db.Table('Photograph', db.metadata, autoload=True, autoload_with=db.engine)
 monument_photograph = db.Table('Monument_photograph', db.metadata, autoload=True, autoload_with=db.engine)
@@ -25,6 +26,8 @@ monument = db.Table('Monument', db.metadata, autoload=True, autoload_with=db.eng
 # The route() function of the Flask class is a decorator,
 # which tells the application which URL should call
 # the associated function.
+
+
 @app.route('/')
 def dashboard():
     presentyear = date.today().year
@@ -55,9 +58,11 @@ def dashboard():
     #print(monumentdetails)
     return render_template('index.html', photographdetails=photographdetails, monumentdetails=monumentdetails,  photographcoordinate=photographcoords, monumentcoordinate=monumentcoords, user_cont=puser, puser2015=puser2015, puser2016=puser2016, puser2018=puser2018, puser2019=puser2019, puser2020=puser2020, puser2021=puser2021, puser2022=puser2022)
 
+
 @app.route('/about')
 def about():
     return render_template("About.html")
+
 
 @app.route('/stats')
 def ranking():
@@ -106,13 +111,16 @@ def stats_year(year):
     # show the user profile for that user
     return render_template('statsyear.html', year=year, editionyear=editionyear[0], photographyear=photographyear, photographeryear=photographeryear, winner_1=winner_1[0])#, winner_2=winner_2[0], winner_3=winner_3[0], winner_4=winner_4[0], winner_5=winner_5[0], winner_6=winner_6[0], winner_7=winner_7[0], winner_8=winner_8[0], winner_9=winner_9[0], winner_10=winner_10[0])
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
 
+
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template("404.html")
+
 
 # main driver function
 if __name__ == '__main__':

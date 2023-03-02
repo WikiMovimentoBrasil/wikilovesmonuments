@@ -77,43 +77,34 @@ def get_username(title) -> str:
 #get_username("File:2015-07-22-Estacao da Luz-01.jpg")
 
 
-def get_categories(title) -> str:
-    
-    """
-    the category of the file on the homepage using api: https://commons.wikimedia.org/w/api.php
-
-    Args:
-        title (string): the title of the commons file
-        lang(string): the particular wikipedia api needed eg en, fr, commons
-
-    Returns:
-        Categories
-    """
-    
-    url="https://commons.wikimedia.org/w/api.php"
-
-    params = {
-            "action": "query",
-            "prop":"imageinfo",
-            "titles": title,
-            "iiprop":"extmetadata", #the type of file information to get
-            "format": "json",
-    }
-
-    resp = requests.get(url, params)
-    response = resp.json()
-    response_pages = response['query']['pages'] 
-    page_id = list(response_pages.keys())[0]  # automates the pageid for each file/a file 
-    imageinfo = response_pages[page_id]['imageinfo'] # retrieves the value of item imageinfo
+def get_categories(file) -> str:
     
     try:
-        for response_item in imageinfo: #loops through the imageinfo list
-            return response_item['extmetadata']['Categories']['value']       
+        wikidata_qid = get_monumentid(file)
+        wikidata = pywikibot.Site('wikidata', 'wikidata')
+        page = pywikibot.ItemPage(wikidata, wikidata_qid)
+        item_dict = page.get()
+        item_claim = item_dict['claims']['P373']
 
+        if len(item_claim) > 1:
+            QID_item = ["Category:" + item_loc.target for item_loc in item_claim]
+            return str(QID_item)
+
+        elif len(item_claim) == 1:
+            item_loc = item_claim[0]
+            QID_item = item_loc.target
+            #QID1 = pywikibot.ItemPage(repo, itemm) 
+            #name = QID1.get()
+            return "Category:" + QID_item
+
+        else:
+            return None
+        
     except:
-        return None   
+        return None
+    
+#get_categories("File:' Casa da Cultura.jpg")
 
-#print(get_categories("File:Supreme_Federal_Court_-_Statue.jpg"))
 
 def get_monumentid(title) -> str:
     
@@ -165,6 +156,7 @@ def get_monumentid(title) -> str:
         return None
     
 #print(get_monumentid("File:10092015-IMG_0444.jpg"))
+
 
 def get_winners(title):
     
@@ -249,6 +241,7 @@ def get_last_modified(title) -> str:
 
 #print(get_last_modified("File:Supreme_Federal_Court_-_Statue.jpg"))
 
+
 def get_last_created(title) -> str:
     
     """
@@ -290,6 +283,7 @@ def get_last_created(title) -> str:
 
 #print(get_last_created("File:A entrada do Castelo de Brennand em Recife.jpg"))
 
+
 def get_location(file) -> str:
     
     try:
@@ -317,6 +311,7 @@ def get_location(file) -> str:
             
 #print(get_location("File:2015-07-22-Estacao da Luz-01.jpg"))
 
+
 def get_coordinate(file) -> tuple:
     
     try:
@@ -337,6 +332,7 @@ def get_coordinate(file) -> tuple:
         None
 
 #print(get_coordinate('File:Açude_Cedro_-_Detalhe_do_acabamento_da_barragem_principal.jpg'))
+
 
 def get_street(file) -> str:
     
@@ -400,6 +396,7 @@ def get_license(title) -> str:
         return None   
 
 #print(get_license("File:Supreme_Federal_Court_-_Statue.jpg"))
+
 
 def get_registration(file) -> str:
     
@@ -471,6 +468,7 @@ def get_camera_name(title) -> str:
         return None
     
 #print(get_camera_name("File:Supreme_Federal_Court_-_Statue.jpg"))
+
 
 def get_camera_coordinate(title) -> str:
     
