@@ -79,31 +79,18 @@ def get_username(title) -> str:
 
 def get_categories(file) -> str:
     
+    wikidata_qid = get_monumentid(file)
+    wikidata = pywikibot.Site('wikidata', 'wikidata')
+    page = pywikibot.ItemPage(wikidata, wikidata_qid)
+    item_dict = page.get()
     try:
-        wikidata_qid = get_monumentid(file)
-        wikidata = pywikibot.Site('wikidata', 'wikidata')
-        page = pywikibot.ItemPage(wikidata, wikidata_qid)
-        item_dict = page.get()
-        item_claim = item_dict['claims']['P373']
-
-        if len(item_claim) > 1:
-            QID_item = ["Category:" + item_loc.target for item_loc in item_claim]
-            return str(QID_item)
-
-        elif len(item_claim) == 1:
-            item_loc = item_claim[0]
-            QID_item = item_loc.target
-            #QID1 = pywikibot.ItemPage(repo, itemm) 
-            #name = QID1.get()
-            return "Category:" + QID_item
-
-        else:
-            return None
-        
+        sitelink_link = item_dict['sitelinks']['commonswiki']
+        sitelink = str(sitelink_link)[2:-2]
+        return sitelink
     except:
         return None
     
-#get_categories("File:' Casa da Cultura.jpg")
+print(get_categories("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 
 def get_monumentid(title) -> str:
