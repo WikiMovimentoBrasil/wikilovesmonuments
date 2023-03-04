@@ -77,22 +77,6 @@ def get_username(title) -> str:
 #get_username("File:2015-07-22-Estacao da Luz-01.jpg")
 
 
-def get_categories(file) -> str:
-    
-    wikidata_qid = get_monumentid(file)
-    wikidata = pywikibot.Site('wikidata', 'wikidata')
-    page = pywikibot.ItemPage(wikidata, wikidata_qid)
-    item_dict = page.get()
-    try:
-        sitelink_link = item_dict['sitelinks']['commonswiki']
-        sitelink = str(sitelink_link)[2:-2]
-        return sitelink
-    except:
-        return None
-    
-print(get_categories("File:2015-07-22-Estacao da Luz-01.jpg"))
-
-
 def get_monumentid(title) -> str:
     
     """
@@ -143,6 +127,35 @@ def get_monumentid(title) -> str:
         return None
     
 #print(get_monumentid("File:10092015-IMG_0444.jpg"))
+
+
+def get_categories(title) -> str:
+    
+    """
+    sitelink of a specific file on the homepage using api: https://commons.wikimedia.org/w/api.php
+
+    Args:
+        title (string): the title of the commons file
+
+    Returns:
+        the sitelink of that uploaded the file
+    """
+    try:
+
+        wikidata_qid = get_monumentid(title)
+        wikidata = pywikibot.Site('wikidata', 'wikidata')
+        page = pywikibot.ItemPage(wikidata, wikidata_qid)
+        item_dict = page.get()
+        
+        sitelink_link = item_dict['sitelinks']['commonswiki']
+        sitelink = str(sitelink_link)[2:-2]
+        return sitelink
+    except:
+        return None
+    
+print(get_categories("File:2015-07-22-Estacao da Luz-01.jpg"))
+
+
 
 
 def get_winners(title):
