@@ -52,6 +52,6 @@ The application is written in Python using a Flask framework, which facilitates 
 
 #### Others
 
-Database schema can be found here: https://dbdiagram.io/d/63b82a0c7d39e42284e95974
+[Database schema] (https://dbdiagram.io/d/63b82a0c7d39e42284e95974)
 
-Styling guide: https://design.wikimedia.org/style-guide/visual-style_colors.html
+[Styling guide] (https://design.wikimedia.org/style-guide/visual-style_colors.html)
