@@ -153,7 +153,7 @@ def get_categories(title) -> str:
     except:
         return None
     
-print(get_categories("File:2015-07-22-Estacao da Luz-01.jpg"))
+#print(get_categories("File:2015-07-22-Estacao da Luz-01.jpg"))
 
 
 
