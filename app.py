@@ -16,7 +16,7 @@ from datetime import date
 app = Flask(__name__)
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\wikilovesmonuments.db' 
+app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\NWANDU KELECHUKWU\Desktop\outreachy\code\Model\wikilovesmonument.db' 
 
 
 edition = db.Table('Edition', db.metadata, autoload=True, autoload_with=db.engine)

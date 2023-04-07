@@ -27,7 +27,8 @@ function renderCountdown() {
     // If the count down is over, write some text
     if (distance < 0) {
       clearInterval(x);
-      countdownDisplay.textContent = "EXPIRED";
+      countdownDisplay.textContent =
+        "Wiki Loves Monument Brazil has Commenced for the year";
     }
   }, 1000);
 }
